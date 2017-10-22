@@ -127,6 +127,7 @@ public class J_ChatClient extends JFrame
 			System.out.println("zuosi");
 			System.out.println("fasdfmerge");
 			System.out.println("testtest");
+			sdfsdfsdfasdf
 		}
 	}
 }
