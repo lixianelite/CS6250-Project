@@ -29,6 +29,7 @@ public class                                                                    
 				{
 					try
 					{
+					    System.out.println("Idk");
 						String s = event.getActionCommand();	
 						m_output.writeObject(s);
 						m_output.flush();
