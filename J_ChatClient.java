@@ -19,7 +19,9 @@ public class J_ChatClient extends JFrame
 
 	public J_ChatClient()
 	{
+
 		super("chat prsgram client");
+		System.out.println("Asdfasdf");
 		Container c = getContentPane();
 		m_enter = new JTextField();
 		m_enter.setEnabled(false);
@@ -123,6 +125,7 @@ public class J_ChatClient extends JFrame
 			app.mb_run(args[0], 5000);
 			System.out.println("hello World");
 			System.out.println("zuosi");
+			System.out.println("fasdfmerge");
 			System.out.println("testtest");
 		}
 	}
