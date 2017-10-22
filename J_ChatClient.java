@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 
-public class J_ChatClient extends JFrame
+public class                                                                                                                                                                                                                                                                                                                                                                                                                                                             J_ChatClient extends JFrame
 {
 	private ObjectInputStream m_input;
 	private ObjectOutputStream m_output;
@@ -19,9 +19,7 @@ public class J_ChatClient extends JFrame
 
 	public J_ChatClient()
 	{
-
 		super("chat prsgram client");
-		System.out.println("Asdfasdf");
 		Container c = getContentPane();
 		m_enter = new JTextField();
 		m_enter.setEnabled(false);
@@ -31,7 +29,6 @@ public class J_ChatClient extends JFrame
 				{
 					try
 					{
-					    System.out.println("print test");
 						String s = event.getActionCommand();	
 						m_output.writeObject(s);
 						m_output.flush();
@@ -123,11 +120,8 @@ public class J_ChatClient extends JFrame
 		else
 		{
 			app.mb_run(args[0], 5000);
-			System.out.println("hello World");
-			System.out.println("zuosi");
-			System.out.println("fasdfmerge");
-			System.out.println("testtest");
-			sfsdfasdf
+			System.out.println("Hello World!");
+			System.out.println("asdfas");
 		}
 	}
 }
