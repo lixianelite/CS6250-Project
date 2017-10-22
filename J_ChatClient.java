@@ -120,7 +120,7 @@ public class                                                                    
 		else
 		{
 			app.mb_run(args[0], 5000);
-			System.out.println("Hello World!");
+			System.out.println("abcdef");
 		}
 	}
 }
