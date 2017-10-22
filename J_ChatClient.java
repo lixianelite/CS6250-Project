@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 
-public class                                                                                                                                       J_ChatClient extends JFrame
+public class                                                                                                                                                                                                                                                                                                                                                                                                                                                J_ChatClient extends JFrame
 {
 	private ObjectInputStream m_input;
 	private ObjectOutputStream m_output;
@@ -120,7 +120,7 @@ public class                                                                    
 		else
 		{
 			app.mb_run(args[0], 5000);
-			System.out.println("");
+			System.out.println("fsfasdf!");
 		}
 	}
 }
