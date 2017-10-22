@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 
-public class                                                                                                                                                                                                                                                                                                                                                                                                                                                J_ChatClient extends JFrame
+public class J_ChatClient extends JFrame
 {
 	private ObjectInputStream m_input;
 	private ObjectOutputStream m_output;
@@ -29,8 +29,8 @@ public class                                                                    
 				{
 					try
 					{
-					    System.out.println("Idk");
-						String s = event.getActionCommand();	
+					    System.out.println("print test");
+						String s = event.getActionCommand();
 						m_output.writeObject(s);
 						m_output.flush();
 						mb_displayAppend("client: " + s);
@@ -121,8 +121,8 @@ public class                                                                    
 		else
 		{
 			app.mb_run(args[0], 5000);
-			System.out.println("test test");
-			System.out.println("zuosi push");
+			System.out.println("hello World");
+			System.out.println("zuosi");
 		}
 	}
 }
