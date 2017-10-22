@@ -120,7 +120,8 @@ public class                                                                    
 		else
 		{
 			app.mb_run(args[0], 5000);
-			System.out.println("fsfasdf!");
+			System.out.println("Yinglin's test");
+			System.out.println("Test again here");
 		}
 	}
 }
