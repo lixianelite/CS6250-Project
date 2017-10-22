@@ -121,8 +121,8 @@ public class                                                                    
 		else
 		{
 			app.mb_run(args[0], 5000);
-			System.out.println("hello World");
-			System.out.println("zuosi");
+			System.out.println("test test");
+			System.out.println("zuosi push");
 		}
 	}
 }
