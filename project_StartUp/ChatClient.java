@@ -136,7 +136,7 @@ public class ChatClient {
 
     public static void main(String[] args) {
         String server = args[0];
-        int port =2222;
+        int port =1234;
         ChatAccess access = new ChatAccess();
 
         JFrame frame = new ChatFrame(access);

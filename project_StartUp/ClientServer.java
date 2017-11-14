@@ -8,7 +8,7 @@ public class ClientServer {
     public static void main(String [] args){
 
         Object[] selectioValues = { "Server","Client"};
-        String initialSection = "Server";
+        String initialSection = "Client";
 
         Object selection = JOptionPane.showInputDialog(null, "Login as : ", "MyChatApp", JOptionPane.QUESTION_MESSAGE, null, selectioValues, initialSection);
         if(selection.equals("Server")){
