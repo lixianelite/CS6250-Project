@@ -56,6 +56,8 @@ public class MultiThreadServer {
                     }
                 }
 
+                System.out.println("Connect msg: " + connectMsg);
+
                 if (!connectMsg.equals("success")) {
                     PrintStream os = new PrintStream(clientSocket.getOutputStream());
                     os.println(connectMsg);
