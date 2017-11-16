@@ -16,8 +16,10 @@ public class MultiThreadServer {
 
     private final int c_maxClientNum = 10;
 
+    // users list in the cache.
     private Hashtable<String, UserObj> users = new Hashtable<String, UserObj>();
 
+    // threads to handle each user's message
     private final ServerThread[] threads = new ServerThread[c_maxClientNum];
 
     private int portNum = 1234;
@@ -30,6 +32,10 @@ public class MultiThreadServer {
 
         System.out.println(test1.parse());
         System.out.println(test2.parse());
+
+        for (int i = 0; i < c_maxClientNum; ++i) {
+            threads[i] = null;
+        }
     }
 
     public void runServer() {
@@ -41,12 +47,15 @@ public class MultiThreadServer {
         Socket clientSocket;
         while (true) {
             try {
+                // build up a conncection
                 clientSocket = serverSocket.accept();
 
                 String connectMsg = "Server is full.";
+                // find free thread.
                 for (int i = 0; i < c_maxClientNum; ++i) {
-                    if (threads[i] == null) {
+                    if (threads[i] == null || !threads[i].isActive()) {
                         ServerThread tmpThread = new ServerThread(clientSocket, this);
+                        // check user's login information.
                         connectMsg = tmpThread.connect();
                         if (connectMsg.equals("success")) {
                             threads[i] = tmpThread;
@@ -57,19 +66,13 @@ public class MultiThreadServer {
                 }
 
                 System.out.println("Connect msg: " + connectMsg);
-
-                if (!connectMsg.equals("success")) {
-                    PrintStream os = new PrintStream(clientSocket.getOutputStream());
-                    os.println(connectMsg);
-                    os.close();
-                    clientSocket.close();
-                }
             } catch (IOException e) {
-                System.out.println(e);
+                System.out.println("Server.runServer() " + e);
             }
         }
     }
 
+    // check user's login status
     public String checkLogin(UserObj loginUser) {
         UserObj user = getUserObjByAccount(loginUser.getAccount());
         if (user == null) return "No such account name";
@@ -84,7 +87,7 @@ public class MultiThreadServer {
 
     public ServerThread getThreadByAccount(String account) {
         for (ServerThread t : threads){
-            if (t != null && account.equals(t.getUser().getAccount())) return t;
+            if (t != null && t.isActive() && account.equals(t.getUser().getAccount())) return t;
         }
         return null;
     }
