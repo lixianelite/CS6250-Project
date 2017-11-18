@@ -28,10 +28,7 @@ public class clientThread extends Thread{
         clientThread[] threads = this.threads;
 
         try {
-      /*
-       * Create input and output streams for this client.
-       */
-            is = new BufferedReader(new InputStreamReader( clientSocket.getInputStream()));
+            is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintStream(clientSocket.getOutputStream());
             String name;
             while (true) {
@@ -47,6 +44,7 @@ public class clientThread extends Thread{
       /* Welcome the new the client. */
             os.println("Welcome " + name
                     + " to our chat room.\nTo leave enter /quit in a new line.");
+
             synchronized (this) {
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null && threads[i] == this) {
@@ -54,19 +52,24 @@ public class clientThread extends Thread{
                         break;
                     }
                 }
+
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null && threads[i] != this) {
                         threads[i].os.println("*** A new user " + name
                                 + " entered the chat room !!! ***");
                     }
                 }
+
             }
+
+
       /* Start the conversation. */
             while (true) {
                 String line = is.readLine();
                 if (line.startsWith("/quit")) {
                     break;
                 }
+
         /* If the message is private sent it to the given client. */
                 if (line.startsWith("@")) {
                     String[] words = line.split("\\s", 2);
@@ -101,6 +104,7 @@ public class clientThread extends Thread{
                     }
                 }
             }
+
             synchronized (this) {
                 for (int i = 0; i < maxClientsCount; i++) {
                     if (threads[i] != null && threads[i] != this

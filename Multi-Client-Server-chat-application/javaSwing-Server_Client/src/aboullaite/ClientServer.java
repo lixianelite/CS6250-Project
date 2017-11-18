@@ -1,4 +1,3 @@
-package aboullaite;
 
 import javax.swing.*;
 

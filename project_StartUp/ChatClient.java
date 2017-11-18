@@ -40,8 +40,11 @@ public class ChatClient {
                         BufferedReader reader = new BufferedReader(
                                 new InputStreamReader(socket.getInputStream()));
                         String line;
-                        while ((line = reader.readLine()) != null)
-                            notifyObservers(line);
+                        //while ((line = reader.readLine()) != null) notifyObservers(line);
+                        while (true){
+                            line = reader.readLine();
+                            if (line != null) notifyObservers(line);
+                        }
                     } catch (IOException ex) {
                         notifyObservers(ex);
                     }

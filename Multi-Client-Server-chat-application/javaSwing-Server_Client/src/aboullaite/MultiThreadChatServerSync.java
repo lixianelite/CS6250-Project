@@ -1,6 +1,5 @@
 
 
-package aboullaite;
 
 import java.io.PrintStream;
 import java.io.IOException;

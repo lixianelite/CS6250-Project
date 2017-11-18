@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 public class MultiThreadChatServerSync {
     // The server socket.
     private static ServerSocket serverSocket = null;
+
     // The client socket.
     private static Socket clientSocket = null;
 
