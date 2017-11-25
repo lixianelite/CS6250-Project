@@ -7,8 +7,6 @@
 
 *.md
 
-*.iml
-
 out/production/CS6250-Project/Multi-Client-Server-chat-application/Client-Android/.classpath
 
 out/production/CS6250-Project/Multi-Client-Server-chat-application/Client-Android/.project
