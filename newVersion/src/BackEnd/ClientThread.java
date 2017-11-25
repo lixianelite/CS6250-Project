@@ -139,6 +139,4 @@ public class ClientThread extends Thread {
             System.out.println("ServeThread.exitThread() " + e);
         }
     }
-
-
 }
