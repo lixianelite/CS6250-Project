@@ -96,8 +96,43 @@ public class UIDesign extends JFrame
         JPanel panel = new JPanel();
         JLabel label = new JLabel("Type sentences here:");
 
+        panel.setLayout(new GridLayout(3, 1));
+
         panel.add(label);
         panel.add(m_enter);
+
+        JPanel spanel=new JPanel();
+        spanel.setLayout(new GridLayout(1, 2));
+        JButton b1=new JButton("Add Friend List");
+        JButton b2=new JButton("Add Block List");
+
+        b1.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog mydialog;
+                mydialog= new JDialog();
+                mydialog.setSize(new Dimension(400,100));
+                mydialog.setTitle("Add Friends");
+                mydialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL); // prevent user from doing something else
+                mydialog.setVisible(true);
+
+                JPanel pan=new JPanel();
+                //pan.setLayout(new FlowLayout());
+                JTextField tx1=new JTextField();
+
+                tx1.setBounds(10, 10, 40, 20);
+
+                pan.add(tx1);
+
+                mydialog.add(pan);
+            }
+        });
+
+        spanel.add(b1);
+        spanel.add(b2);
+
+        panel.add(spanel);
 
         c.add(panel);
 
