@@ -23,6 +23,8 @@ public class UIDesign extends JFrame
     private BufferedReader is = null;
     private PrintStream os = null;
 
+    private ReceiveThread receiveThread = null;
+
     private class ReceiveThread extends Thread{
         @Override
         public void run() {
@@ -30,12 +32,26 @@ public class UIDesign extends JFrame
                 String msg;
                 System.out.println("run start");
 
-                while ((msg = is.readLine()) != null) {
-                    mb_displayAppend("Server: " + msg);
+                while (((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
+                    synchronized (this) {
+                        mb_displayAppend("Server: " + msg);
+                    }
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 System.out.println(e);
+                e.printStackTrace();
             }
+            exitServer();
+        }
+    }
+
+    public void exitServer() {
+        try {
+            socket.close();
+            receiveThread.join();
+        } catch (Exception e) {
+            System.err.println("error! " + e);
+            e.printStackTrace();
         }
     }
 
@@ -163,17 +179,23 @@ public class UIDesign extends JFrame
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             os = new PrintStream(socket.getOutputStream());
             m_enter.setEnabled(true);
-            do {
-                m = is.readLine();
-                mb_displayAppend("Server: " + m);
-            }
-            while(!mb_isEndSession(m));
+//            do {
+//                System.out.println("running");
+//                m = is.readLine();
+//                mb_displayAppend("Server: " + m);
+//            }
+//            while(!mb_isEndSession(m));
+
+            receiveThread = new ReceiveThread();
+
+            receiveThread.start();
+
             /*m_output.writeObject("q");
             m_output.flush();
             m_enter.setEnabled(false);
             m_output.close();
             s.close();*/
-            System.exit(0);
+            //System.exit(0);
         }
         catch(Exception e) {
             System.err.println("error! " + e);
@@ -198,7 +220,6 @@ public class UIDesign extends JFrame
         UIDesign app = new UIDesign(fList, bList);
         app.setSize(350,150);
         app.setVisible(true);
-        //app.mb_run(ipAddress, Integer.valueOf(port));
-
+        app.mb_run(ipAddress, Integer.valueOf(port));
     }
 }
