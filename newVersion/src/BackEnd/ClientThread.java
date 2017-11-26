@@ -49,9 +49,14 @@ public class ClientThread extends Thread {
 
         try {
             while (true) {
+                System.out.println(clientName + "0: ");
                 String line = is.readLine();
                 System.out.println(clientName + ": " + line);
+
                 os.println("From Server: " + line);
+
+                System.out.println(clientName + "1: " + line);
+
                 if (line.startsWith("/quit")){
                     System.out.println("prepare to break");
                     break;
@@ -74,6 +79,7 @@ public class ClientThread extends Thread {
                         }
                     }
                 }
+                System.out.println(clientName + "2: " + line);
             }
             System.out.println("*** Bye " + clientName + " ***");
 

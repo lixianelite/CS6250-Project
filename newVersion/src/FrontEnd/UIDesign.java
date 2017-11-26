@@ -33,9 +33,8 @@ public class UIDesign extends JFrame
                 System.out.println("run start");
 
                 while (((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
-                    synchronized (this) {
-                        mb_displayAppend("Server: " + msg);
-                    }
+                    System.out.println("test: " + msg);
+                    mb_displayAppend("Server: " + msg);
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -84,8 +83,8 @@ public class UIDesign extends JFrame
                     mb_displayAppend("client: " + s);
                     m_enter.setText("");
                     os.println(s);
-                    String res = is.readLine();
-                    mb_displayAppend(res);
+                    //String res = is.readLine();
+                    //mb_displayAppend(res);
                 } catch(Exception e) {
                     System.err.println("error! " + e);
                     e.printStackTrace();
@@ -136,29 +135,6 @@ public class UIDesign extends JFrame
         return false;
     }
 
-    public void client_run(Socket s) {
-
-        try {
-            mb_displayAppend("try to connect");
-
-            String m;
-            is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            m_enter.setEnabled(true);
-            do {
-                m = is.readLine();
-                mb_displayAppend("Server: " + m);
-            }
-            while(!mb_isEndSession(m));
-            s.close();
-            System.exit(0);
-        }
-        catch(Exception e) {
-            System.err.println("error! " + e);
-            e.printStackTrace();
-            mb_displayAppend("error!");
-        }
-    }
-
     private static List<UserInfo> getList(String response){
         String[] people = response.split("#");
         List<UserInfo> list = new ArrayList<>();
@@ -173,29 +149,12 @@ public class UIDesign extends JFrame
 
     public void mb_run(String host, int port) {
         try {
-            mb_displayAppend("try to connect");
             socket = new Socket(host, port);
-            String m;
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             os = new PrintStream(socket.getOutputStream());
             m_enter.setEnabled(true);
-//            do {
-//                System.out.println("running");
-//                m = is.readLine();
-//                mb_displayAppend("Server: " + m);
-//            }
-//            while(!mb_isEndSession(m));
-
             receiveThread = new ReceiveThread();
-
             receiveThread.start();
-
-            /*m_output.writeObject("q");
-            m_output.flush();
-            m_enter.setEnabled(false);
-            m_output.close();
-            s.close();*/
-            //System.exit(0);
         }
         catch(Exception e) {
             System.err.println("error! " + e);
@@ -205,11 +164,11 @@ public class UIDesign extends JFrame
     }
 
     public static void main(String[] args){
-        String ipAddress = "localhost";//args[0];
-        String port = "1234"; //args[1];
-        String userName = "user1"; //args[2];
-        String friendList = "Bravado#David#Jack";//args[3];
-        String blockList = "Jinlin#Ted"; //args[4];
+        String ipAddress = args[0];
+        String port = args[1];
+        String userName = args[2];
+        String friendList = args[3];
+        String blockList = args[4];
 
         System.out.println("ipAddress: " + ipAddress);
         System.out.println("port: " + port);
@@ -218,7 +177,7 @@ public class UIDesign extends JFrame
         List<UserInfo> fList = getList(friendList);
         List<UserInfo> bList = getList(blockList);
         UIDesign app = new UIDesign(fList, bList);
-        app.setSize(350,150);
+        app.setSize(550,350);
         app.setVisible(true);
         app.mb_run(ipAddress, Integer.valueOf(port));
 

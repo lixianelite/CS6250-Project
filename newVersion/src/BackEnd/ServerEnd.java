@@ -52,8 +52,10 @@ public class ServerEnd {
                         boolean success = tmpThread.authenticate();
 
                         if (success) {
+                            System.out.println("ServerEnd Success");
                             threads[i] = tmpThread;
                             threads[i].start();
+                            System.out.println("thread" + i + " started");
                             break;
                         }
                     }

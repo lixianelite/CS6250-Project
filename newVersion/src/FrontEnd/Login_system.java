@@ -84,8 +84,8 @@ public class Login_system implements Observer {
                     frame.setVisible(false);
                     os.println("/quit");
                     socketClose();
-                    //UIDesign.main(args);
-                    System.exit(0);
+                    UIDesign.main(args);
+                    frame.setVisible(false);
                 }
             }
         });
@@ -150,6 +150,6 @@ public class Login_system implements Observer {
 
     public static void main(String[] args) {
         Login_system window = new Login_system();
-        //window.frame.setVisible(true);
+        window.frame.setVisible(true);
     }
 }
