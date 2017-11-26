@@ -53,6 +53,7 @@ public class ClientThread extends Thread {
                 System.out.println(clientName + ": " + line);
                 os.println("From Server: " + line);
                 if (line.startsWith("/quit")){
+                    System.out.println("prepare to break");
                     break;
                 }
 
@@ -74,7 +75,7 @@ public class ClientThread extends Thread {
                     }
                 }
             }
-            os.println("*** Bye " + clientName + " ***");
+            System.out.println("*** Bye " + clientName + " ***");
 
             synchronized (this) {
                 for (int i = 0; i < threads.length; i++) {
@@ -87,6 +88,7 @@ public class ClientThread extends Thread {
             is.close();
             os.close();
             clientSocket.close();
+            System.out.println("clientSocket closed");
         } catch (IOException e) {
             System.out.println("multiThreading error: " + e);
         }

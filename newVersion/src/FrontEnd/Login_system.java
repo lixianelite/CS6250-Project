@@ -28,20 +28,17 @@ public class Login_system {
     private JTextField txtUsername;
     private JPasswordField txtPassword;
     private Socket socket;
-    private List<UserInfo> friendList;
-    private List<UserInfo> blockList;
 
     private BufferedReader is = null;
     private PrintStream os = null;
 
-    private boolean success;
+    private String[] args;
 
     public Login_system() {
         initialize();
     }
 
     private void initialize() {
-
         frame = new JFrame();
         frame.setBounds(200, 200, 450, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,30 +71,44 @@ public class Login_system {
 
                 String password = String.valueOf(txtPassword.getPassword());
                 String username = txtUsername.getText();
+                args[2] = username;
 
                 boolean success = login(username, password);
 
                 if (success){
-                    UIDesign app = new UIDesign(friendList, blockList, socket, is, os);
-                    app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    app.setSize(500,400);
-                    app.setVisible(true);
                     frame.setVisible(false);
+                    os.println("/quit");
+                    socketClose();
+                    UIDesign.main(args);
                 }
             }
         });
         btnLogin.setBounds(226, 224, 117, 29);
         frame.getContentPane().add(btnLogin);
+        args = new String[5];
     }
 
     public void initSocket() {
         try {
             socket = new Socket("localhost", 1234);
+            args[0] = "localhost";
+            args[1] = 1234 + "";
             os = new PrintStream(socket.getOutputStream());
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Successfully connect to server");
         } catch (IOException e) {
             System.out.println("ClientApp.initSocket() " + e);
+        }
+    }
+
+    public void socketClose(){
+        try {
+            os.close();
+            is.close();
+            socket.close();
+            System.out.println("socket close Successfully");
+        } catch (IOException e) {
+            System.out.println("Close " + e);
         }
     }
 
@@ -112,11 +123,10 @@ public class Login_system {
 
             if (response1.equals("Success")) {
                 String response2 = is.readLine();
+                args[3] = response2;
                 System.out.println("response2: " + response2);
-                friendList = getList(response2);
-
                 String response3 = is.readLine();
-                blockList = getList(response3);
+                args[4] = response3;
                 System.out.println("response3: " + response3);
                 return true;
             }
@@ -130,17 +140,7 @@ public class Login_system {
         os.println(msg);
     }
 
-    private List<UserInfo> getList(String response){
-        String[] people = response.split("#");
-        List<UserInfo> list = new ArrayList<>();
-        for (int i = 0; i < people.length; i++){
-            if (!people[i].equals("")){
-                UserInfo friend = new UserInfo(people[i]);
-                list.add(friend);
-            }
-        }
-        return list;
-    }
+
 
     public static void main(String[] args) {
         Login_system window = new Login_system();
