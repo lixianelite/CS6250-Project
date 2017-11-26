@@ -183,11 +183,11 @@ public class UIDesign extends JFrame
     }
 
     public static void main(String[] args){
-        String ipAddress = args[0];
-        String port = args[1];
-        String userName = args[2];
-        String friendList = args[3];
-        String blockList = args[4];
+        String ipAddress = "localhost";//args[0];
+        String port = "1234"; //args[1];
+        String userName = "user1"; //args[2];
+        String friendList = "Bravado#David#Jack";//args[3];
+        String blockList = "Jinlin#Ted"; //args[4];
 
         System.out.println("ipAddress: " + ipAddress);
         System.out.println("port: " + port);
@@ -198,7 +198,7 @@ public class UIDesign extends JFrame
         UIDesign app = new UIDesign(fList, bList);
         app.setSize(350,150);
         app.setVisible(true);
-        //app.mb_run(ipAddress, Integer.valueOf(port));
+        app.mb_run(ipAddress, Integer.valueOf(port));
 
     }
 }

@@ -23,7 +23,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.*;
 
-public class Login_system {
+public class Login_system implements Observer {
     private JFrame frame;
     private JTextField txtUsername;
     private JPasswordField txtPassword;
@@ -36,6 +36,11 @@ public class Login_system {
 
     public Login_system() {
         initialize();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        System.exit(0);
     }
 
     private void initialize() {
@@ -79,7 +84,8 @@ public class Login_system {
                     frame.setVisible(false);
                     os.println("/quit");
                     socketClose();
-                    UIDesign.main(args);
+                    //UIDesign.main(args);
+                    System.exit(0);
                 }
             }
         });
@@ -144,6 +150,6 @@ public class Login_system {
 
     public static void main(String[] args) {
         Login_system window = new Login_system();
-        window.frame.setVisible(true);
+        //window.frame.setVisible(true);
     }
 }
