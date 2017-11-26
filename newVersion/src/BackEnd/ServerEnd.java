@@ -65,7 +65,6 @@ public class ServerEnd {
         }
     }
 
-
     public String checkLogin(UserObject loginUser) {
         UserObject user = DataManagement.INSTANCE.findUserByUserName(loginUser.getUserName());
         if (user == null) return NO_USER;

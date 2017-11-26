@@ -6,10 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
@@ -25,6 +22,21 @@ public class UIDesign extends JFrame
     private BufferedReader is = null;
     private PrintStream os = null;
 
+    private class ReceiveThread extends Thread{
+        @Override
+        public void run() {
+            try {
+                String msg;
+                System.out.println("run start");
+                // receive msg from server.
+                while ((msg = is.readLine()) != null) {
+                    mb_displayAppend("Server: " + msg);
+                }
+            } catch (IOException e) {
+                System.out.println(e);
+            }
+        }
+    }
 
     public UIDesign(List<UserInfo> friendList, List<UserInfo> blockList, Socket socket, BufferedReader is, PrintStream os) {
         super("Chat Program");
@@ -53,25 +65,28 @@ public class UIDesign extends JFrame
         m_enter = new JTextField(20);
         m_enter.setBounds(50,50, 150,120);
 
-        /*m_enter.addActionListener(new ActionListener() {
+        m_enter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
                     String s = event.getActionCommand();
-                    m_output.writeObject(s);
-                    m_output.flush();
-                    mb_displayAppend("server: " + s);
+                    mb_displayAppend("client: " + s);
                     m_enter.setText("");
+                    os.println(s);
+                    String res = is.readLine();
+                    mb_displayAppend(res);
                 } catch(Exception e) {
                     System.err.println("error! " + e);
                     e.printStackTrace();
                 }
             }
-        });*/
+        });
 
         JPanel panel = new JPanel();
-        JLabel label = new JLabel("Type sentenses here:");
+        JLabel label = new JLabel("Type sentences here:");
+
         panel.add(label);
         panel.add(m_enter);
+
         c.add(panel);
 
         DefaultListModel<String> l2 = new DefaultListModel<>();
@@ -83,10 +98,11 @@ public class UIDesign extends JFrame
         bList.setBounds(100,100, 75,75);
         c.add(bList);
         c.setLayout(new GridLayout(2,2));
+        ReceiveThread trd = new ReceiveThread();
+        trd.start();
     }
 
-    public void mb_displayAppend(String s)
-    {
+    public void mb_displayAppend(String s) {
         m_display.append(s + "\n");
         m_display.setCaretPosition(m_display.getText().length());
         m_enter.requestFocusInWindow();
@@ -94,72 +110,50 @@ public class UIDesign extends JFrame
 
     public boolean mb_isEndSession(String m)
     {
-        if(m.equalsIgnoreCase("q"))
-        {
+        if(m.equalsIgnoreCase("q")) {
             return(true);
         }
-        if(m.equalsIgnoreCase("quit"))
-        {
+        if(m.equalsIgnoreCase("quit")) {
             return(true);
         }
-        if(m.equalsIgnoreCase("exit"))
-        {
+        if(m.equalsIgnoreCase("exit")) {
             return(true);
         }
-        if(m.equalsIgnoreCase("end"))
-        {
+        if(m.equalsIgnoreCase("end")) {
             return(true);
         }
         return false;
     }
 
-    /*public void mb_run()
-    {
-        try
-        {
-            ServerSocket server = new ServerSocket(5000);
+    public void client_run(Socket s) {
+
+        try {
+            mb_displayAppend("try to connect");
+
             String m;
-            while(true)
-            {
-                m_clientNumber++;
-                mb_displayAppend("waiting for connection [" + m_clientNumber + "]");
-                Socket s = server.accept();
-                mb_displayAppend("receives connection from client [" + m_clientNumber + "]");
-                m_output = new ObjectOutputStream(s.getOutputStream());
-                m_input = new ObjectInputStream(s.getInputStream());
-                m_output.writeObject("connect!");
-                m_output.flush();
-                m_enter.setEnabled(true);
-                do
-                {
-                    m = (String)m_input.readObject();
-                    mb_displayAppend("Client: " + m);
-                }
-                while(!mb_isEndSession(m));
-                m_output.writeObject("q");
-                m_output.flush();
-                m_enter.setEnabled(false);
-                m_output.close();
-                m_input.close();
-                s.close();
-                mb_displayAppend("connection from client [" + m_clientNumber + "] ends");
+            is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            m_enter.setEnabled(true);
+            do {
+                m = is.readLine();
+                mb_displayAppend("Server: " + m);
             }
+            while(!mb_isEndSession(m));
+            s.close();
+            System.exit(0);
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             System.err.println("error! " + e);
             e.printStackTrace();
-            mb_displayAppend("connection error!");
+            mb_displayAppend("error!");
         }
-    }*/
+    }
 
-    /*public static void main(String [] args)
-    {
-        UIDesign app = new UIDesign();
+    public static void main(String[] args){
+        String friends = args[0];
+        String blocks = args[1];
+        String userName = args[2];
+        String ipAddress = args[3];
+        String port = args[4];
 
-        app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        app.setSize(350,150);
-        app.setVisible(true);
-        app.mb_run();
-    }*/
+    }
 }

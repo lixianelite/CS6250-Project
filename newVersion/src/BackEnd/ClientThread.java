@@ -50,7 +50,9 @@ public class ClientThread extends Thread {
         try {
             while (true) {
                 String line = is.readLine();
-                if (line.startsWith("/quit")) {
+                System.out.println(clientName + ": " + line);
+                os.println("From Server: " + line);
+                if (line.startsWith("/quit")){
                     break;
                 }
 
@@ -64,7 +66,7 @@ public class ClientThread extends Thread {
                                         && threads[i].clientName != null
                                         && threads[i].clientName.equals(words[0])) {
                                     threads[i].os.println(clientName + ">> " + words[1]);
-                                    this.os.println(">" + clientName + "> " + words[1]);
+                                    //this.os.println(">" + clientName + "> " + words[1]);
                                     break;
                                 }
                             }
@@ -72,7 +74,6 @@ public class ClientThread extends Thread {
                     }
                 }
             }
-
             os.println("*** Bye " + clientName + " ***");
 
             synchronized (this) {

@@ -28,8 +28,13 @@ public class Login_system {
     private JTextField txtUsername;
     private JPasswordField txtPassword;
     private Socket socket;
+    private List<UserInfo> friendList;
+    private List<UserInfo> blockList;
+
     private BufferedReader is = null;
     private PrintStream os = null;
+
+    private boolean success;
 
     public Login_system() {
         initialize();
@@ -70,31 +75,15 @@ public class Login_system {
                 String password = String.valueOf(txtPassword.getPassword());
                 String username = txtUsername.getText();
 
-                boolean succ = login(username, password);
+                boolean success = login(username, password);
 
-                if (succ){
-                    System.out.println("lixian succeed!");
-                }
-
-                /*if (map.containsKey(username) && map.get(username).equals(password)) {
-                    txtPassword.setText(null);
-                    txtUsername.setText(null);
-                    // jump to next info & need to import this package
-
-                    //Login_system2 newWindow = new Login_system2();
-                    //newWindow.main(null);
-
-                    frame.setVisible(false); // make current frame disappear
-                    UIDesign app = new UIDesign();
+                if (success){
+                    UIDesign app = new UIDesign(friendList, blockList, socket, is, os);
                     app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    app.setSize(500,400); // change the frame size
+                    app.setSize(500,400);
                     app.setVisible(true);
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "Please provide valid login information","Login Error", JOptionPane.ERROR_MESSAGE);
-                    txtPassword.setText(null);
-                    txtUsername.setText(null);
-                }*/
+                    frame.setVisible(false);
+                }
             }
         });
         btnLogin.setBounds(226, 224, 117, 29);
@@ -110,7 +99,6 @@ public class Login_system {
         } catch (IOException e) {
             System.out.println("ClientApp.initSocket() " + e);
         }
-
     }
 
     private boolean login(String username, String password) {
@@ -125,17 +113,11 @@ public class Login_system {
             if (response1.equals("Success")) {
                 String response2 = is.readLine();
                 System.out.println("response2: " + response2);
-                List<UserInfo> friendList = getList(response2);
+                friendList = getList(response2);
 
                 String response3 = is.readLine();
-                List<UserInfo> blockList = getList(response3);
+                blockList = getList(response3);
                 System.out.println("response3: " + response3);
-                UIDesign app = new UIDesign(friendList, blockList, socket, is, os);
-                app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                app.setSize(500,400);
-                app.setVisible(true);
-                frame.setVisible(false);
-
                 return true;
             }
         } catch (IOException e) {
