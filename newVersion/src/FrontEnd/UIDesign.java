@@ -35,7 +35,7 @@ public class UIDesign extends JFrame
                 msg = is.readLine();
                 msg = is.readLine();
                 while (((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
-                    mb_displayAppend("Server: " + msg);
+                    mb_displayAppend(msg);
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -82,7 +82,7 @@ public class UIDesign extends JFrame
                 try {
                     String s = event.getActionCommand();
                     //s = "@" + userName + " " + s;
-                    mb_displayAppend("@" + userName + ": " + s);
+                    //mb_displayAppend("@" + userName + ": " + s);
                     m_enter.setText("");
 
                     os.println(s);

@@ -52,7 +52,7 @@ public class ClientThread extends Thread {
                 String line = is.readLine();
                 System.out.println(clientName + ": " + line);
 
-                os.println(line);
+                //os.println(line);
 
                 if (line.startsWith("/quit")){
                     System.out.println("prepare to break");
@@ -73,7 +73,7 @@ public class ClientThread extends Thread {
                                         && threads[i].clientName != null
                                         && threads[i].clientName.equals(words[0])) {
                                     threads[i].os.println(clientName + ">> " + words[1]);
-                                    //this.os.println(">" + clientName + "> " + words[1]);
+                                    this.os.println(">" + clientName + "> " + words[1]);
                                     break;
                                 }
                             }
