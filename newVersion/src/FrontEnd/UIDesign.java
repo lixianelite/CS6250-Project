@@ -18,6 +18,7 @@ public class UIDesign extends JFrame
     private List<UserInfo> blockList;
     private JTextField m_enter;
     private JTextArea m_display;
+    private String userName;
 
     private Socket socket;
     private BufferedReader is = null;
@@ -30,10 +31,10 @@ public class UIDesign extends JFrame
         public void run() {
             try {
                 String msg;
-                System.out.println("run start");
-
+                msg = is.readLine();
+                msg = is.readLine();
+                msg = is.readLine();
                 while (((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
-                    System.out.println("test: " + msg);
                     mb_displayAppend("Server: " + msg);
                 }
             } catch (Exception e) {
@@ -80,11 +81,11 @@ public class UIDesign extends JFrame
             public void actionPerformed(ActionEvent event) {
                 try {
                     String s = event.getActionCommand();
-                    mb_displayAppend("client: " + s);
+                    //s = "@" + userName + " " + s;
+                    mb_displayAppend("@" + userName + ": " + s);
                     m_enter.setText("");
+
                     os.println(s);
-                    //String res = is.readLine();
-                    //mb_displayAppend(res);
                 } catch(Exception e) {
                     System.err.println("error! " + e);
                     e.printStackTrace();
@@ -147,11 +148,13 @@ public class UIDesign extends JFrame
         return list;
     }
 
-    public void mb_run(String host, int port) {
+    public void mb_run(String host, int port, String UserInfo, String userName) {
         try {
+            this.userName = userName;
             socket = new Socket(host, port);
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             os = new PrintStream(socket.getOutputStream());
+            os.println(UserInfo);
             m_enter.setEnabled(true);
             receiveThread = new ReceiveThread();
             receiveThread.start();
@@ -169,17 +172,14 @@ public class UIDesign extends JFrame
         String userName = args[2];
         String friendList = args[3];
         String blockList = args[4];
-
-        System.out.println("ipAddress: " + ipAddress);
-        System.out.println("port: " + port);
-        System.out.println("userName: " + userName);
+        String userInfo = args[5];
 
         List<UserInfo> fList = getList(friendList);
         List<UserInfo> bList = getList(blockList);
         UIDesign app = new UIDesign(fList, bList);
         app.setSize(550,350);
         app.setVisible(true);
-        app.mb_run(ipAddress, Integer.valueOf(port));
+        app.mb_run(ipAddress, Integer.valueOf(port), userInfo, userName);
 
     }
 }

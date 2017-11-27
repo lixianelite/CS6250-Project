@@ -91,7 +91,7 @@ public class Login_system implements Observer {
         });
         btnLogin.setBounds(226, 224, 117, 29);
         frame.getContentPane().add(btnLogin);
-        args = new String[5];
+        args = new String[6];
     }
 
     public void initSocket() {
@@ -122,7 +122,9 @@ public class Login_system implements Observer {
         try {
             initSocket();
             UserObject tmp = new UserObject(username, password);
-            sendMsg(tmp.parse());
+            String UserInfo = tmp.parse();
+            args[5] = UserInfo;
+            sendMsg(UserInfo);
 
             String response1 = is.readLine();
             System.out.println("response1: " + response1);

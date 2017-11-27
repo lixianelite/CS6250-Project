@@ -43,8 +43,6 @@ public class ServerEnd {
             try {
                 clientSocket = serverSocket.accept();
 
-                String connectMsg = "Server is full.";
-
                 for (int i = 0; i < c_maxClientNum; ++i) {
                     if (threads[i] == null) {
                         ClientThread tmpThread = new ClientThread(clientSocket, threads, this);

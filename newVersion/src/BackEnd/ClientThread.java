@@ -49,13 +49,10 @@ public class ClientThread extends Thread {
 
         try {
             while (true) {
-                System.out.println(clientName + "0: ");
                 String line = is.readLine();
                 System.out.println(clientName + ": " + line);
 
-                os.println("From Server: " + line);
-
-                System.out.println(clientName + "1: " + line);
+                os.println(line);
 
                 if (line.startsWith("/quit")){
                     System.out.println("prepare to break");
@@ -63,8 +60,12 @@ public class ClientThread extends Thread {
                 }
 
                 String[] words = line.split("\\s", 2);
+
+
                 if (words.length > 1 && words[1] != null) {
                     words[1] = words[1].trim();
+                    System.out.println("check1: " + words[0]);
+                    System.out.println("check2: " + words[1]);
                     if (!words[1].isEmpty()) {
                         synchronized (this) {
                             for (int i = 0; i < threads.length; i++) {
@@ -79,7 +80,6 @@ public class ClientThread extends Thread {
                         }
                     }
                 }
-                System.out.println(clientName + "2: " + line);
             }
             System.out.println("*** Bye " + clientName + " ***");
 
