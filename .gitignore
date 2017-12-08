@@ -60,5 +60,3 @@ newVersion/.metadata/.plugins/org.eclipse.jdt.core/nonChainingJarsCache
 newVersion/.metadata/.plugins/org.eclipse.ui.intro/introstate
 *.ini
 newVersion/.project
-
-*.iml
