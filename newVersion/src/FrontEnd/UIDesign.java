@@ -17,6 +17,7 @@ public class UIDesign extends JFrame
 {
     private List<UserInfo> friendList;
     private List<UserInfo> blockList;
+    // Chat contents of different friends in friend list
     private List<StringBuilder> chats = new ArrayList<StringBuilder>();
     private JTextField m_enter;
     private JTextArea m_display;
@@ -50,6 +51,7 @@ public class UIDesign extends JFrame
         }
     }
 
+    // Friend selection list listener, to change current window and target receiver.
     private class FriendListSelectionListener implements ListSelectionListener {
 
         @Override
@@ -88,6 +90,7 @@ public class UIDesign extends JFrame
         DefaultListModel<String> l1 = new DefaultListModel<>();
         for (UserInfo object : this.friendList){
             l1.addElement(object.getUserName());
+            // Initialize chat contents in each chats
             StringBuilder sb = new StringBuilder();
             sb.append("chat with " + object.getUserName() + ":\n");
             chats.add(sb);
@@ -174,6 +177,7 @@ public class UIDesign extends JFrame
     }
 
     public void mb_displayAppend(String s) {
+        // update current chat window contents
         if (selectedIndex != -1) {
             chats.get(selectedIndex).append(s + "\n");
         }
