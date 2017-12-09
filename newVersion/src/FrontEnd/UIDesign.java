@@ -3,11 +3,12 @@ package FrontEnd;
 import Model.UserInfo;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +17,14 @@ public class UIDesign extends JFrame
 {
     private List<UserInfo> friendList;
     private List<UserInfo> blockList;
+    // Chat contents of different friends in friend list
+    private List<StringBuilder> chats = new ArrayList<StringBuilder>();
     private JTextField m_enter;
     private JTextArea m_display;
     private String userName;
+
+    // index of selected friend index
+    private int selectedIndex = -1;
 
     private Socket socket;
     private BufferedReader is = null;
@@ -35,7 +41,8 @@ public class UIDesign extends JFrame
                 msg = is.readLine();
                 msg = is.readLine();
                 while (((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
-                    mb_displayAppend(msg);
+                    parseMessage(msg);
+                    //mb_displayAppend(msg);
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -43,6 +50,37 @@ public class UIDesign extends JFrame
             }
             exitServer();
         }
+
+        private void parseMessage(String msg) {
+            msg = msg.replaceFirst("@" ,"");
+            String name = msg.split(":", 2)[0];
+            for (int i = 0; i < friendList.size(); ++i) {
+                if (name.equals(friendList.get(i).getUserName())) {
+                    if (i == selectedIndex) {
+                        mb_displayAppend(msg);
+                    }
+                    else {
+                        chats.get(i).append(msg+"\n");
+                    }
+                }
+            }
+        }
+    }
+
+    // Friend selection list listener, to change current window and target receiver.
+    private class FriendListSelectionListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            //System.out.println(e.getClass());
+            JList<String> fList = (JList<String>)e.getSource();
+            selectedIndex = fList.getSelectedIndex();
+            String st = chats.get(selectedIndex).toString();
+            m_display.setText(st);
+            m_display.setCaretPosition(m_display.getText().length());
+            //System.out.println(selectedIndex + " " + friendList.get(selectedIndex).getUserName());
+        }
+
     }
 
     public void exitServer() {
@@ -68,11 +106,17 @@ public class UIDesign extends JFrame
         DefaultListModel<String> l1 = new DefaultListModel<>();
         for (UserInfo object : this.friendList){
             l1.addElement(object.getUserName());
+            // Initialize chat contents in each chats
+            StringBuilder sb = new StringBuilder();
+            sb.append("chat with " + object.getUserName() + ":\n");
+            chats.add(sb);
         }
 
         JList<String> fList = new JList<>(l1);
         fList.setBounds(100,100, 75,75);
         c.add(fList);
+
+        fList.addListSelectionListener(new FriendListSelectionListener());
 
         m_enter = new JTextField(20);
         m_enter.setBounds(50,50, 150,120);
@@ -80,12 +124,20 @@ public class UIDesign extends JFrame
         m_enter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
+                    // changed here
+                    // send message to target user.
                     String s = event.getActionCommand();
-                    //s = "@" + userName + " " + s;
-                    //mb_displayAppend("@" + userName + ": " + s);
+                    if (selectedIndex != -1) {
+                        os.println("message @" + friendList.get(selectedIndex).getUserName() + ":" + s);
+                        mb_displayAppend(userName + ": " + s);
+                    }
                     m_enter.setText("");
 
-                    os.println(s);
+//                    s = "@" + userName + " " + s;
+//                    mb_displayAppend("@" + userName + ": " + s);
+//                    m_enter.setText("");
+//
+//                    os.println(s);
                 } catch(Exception e) {
                     System.err.println("error! " + e);
                     e.printStackTrace();
@@ -96,8 +148,43 @@ public class UIDesign extends JFrame
         JPanel panel = new JPanel();
         JLabel label = new JLabel("Type sentences here:");
 
+        panel.setLayout(new GridLayout(3, 1));
+
         panel.add(label);
         panel.add(m_enter);
+
+        JPanel spanel=new JPanel();
+        spanel.setLayout(new GridLayout(1, 2));
+        JButton b1=new JButton("Add Friend List");
+        JButton b2=new JButton("Add Block List");
+
+        b1.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog mydialog;
+                mydialog= new JDialog();
+                mydialog.setSize(new Dimension(400,100));
+                mydialog.setTitle("Add Friends");
+                mydialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL); // prevent user from doing something else
+                mydialog.setVisible(true);
+
+                JPanel pan=new JPanel();
+                //pan.setLayout(new FlowLayout());
+                JTextField tx1=new JTextField();
+
+                tx1.setBounds(10, 10, 40, 20);
+
+                pan.add(tx1);
+
+                mydialog.add(pan);
+            }
+        });
+
+        spanel.add(b1);
+        spanel.add(b2);
+
+        panel.add(spanel);
 
         c.add(panel);
 
@@ -114,6 +201,10 @@ public class UIDesign extends JFrame
     }
 
     public void mb_displayAppend(String s) {
+        // update current chat window contents
+        if (selectedIndex != -1) {
+            chats.get(selectedIndex).append(s + "\n");
+        }
         m_display.append(s + "\n");
         m_display.setCaretPosition(m_display.getText().length());
         m_enter.requestFocusInWindow();
