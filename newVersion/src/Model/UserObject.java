@@ -33,7 +33,6 @@ public class UserObject extends PacketObject {
         friendList.add(friend);
     }
 
-
     public void addBlock(UserInfo user){
         for (int i = 0; i < blockList.size(); i++){
             String userName = blockList.get(i).getUserName();
@@ -86,7 +85,7 @@ public class UserObject extends PacketObject {
         if(arr[0]=="nil"){
             userName=null;
         } else{
-            userName=arr[1];
+            userName=arr[0];
         }
 
         if(arr[1]=="nil"){

@@ -1,8 +1,10 @@
 package FrontEnd;
 
 
+import BackEnd.ServerEnd;
 import Model.UserInfo;
 import Model.UserObject;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -27,6 +29,7 @@ public class Login_system implements Observer {
     private JFrame frame;
     private JTextField txtUsername;
     private JPasswordField txtPassword;
+    private JLabel indicate;
     private Socket socket;
 
     private BufferedReader is = null;
@@ -45,6 +48,7 @@ public class Login_system implements Observer {
 
     private void initialize() {
         frame = new JFrame();
+
         frame.setBounds(200, 200, 450, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
@@ -60,6 +64,10 @@ public class Login_system implements Observer {
         JLabel lblPssword = new JLabel("Password");
         lblPssword.setBounds(70, 142, 73, 16);
         frame.getContentPane().add(lblPssword);
+
+        indicate = new JLabel("");
+        indicate.setBounds(70, 200, 200, 16);
+        frame.getContentPane().add(indicate);
 
         txtUsername = new JTextField();
         txtUsername.setBounds(143, 88, 119, 26);
@@ -78,14 +86,16 @@ public class Login_system implements Observer {
                 String username = txtUsername.getText();
                 args[2] = username;
 
-                boolean success = login(username, password);
+                String responseMessage = login(username, password);
 
-                if (success){
-                    frame.setVisible(false);
+                if (responseMessage.equals(ServerEnd.SUCCESS)){
+                    handleSucessLogin();
                     os.println("/quit");
                     socketClose();
                     UIDesign.main(args);
                     frame.setVisible(false);
+                }else{
+                    indicate.setText(responseMessage);
                 }
             }
         });
@@ -118,7 +128,21 @@ public class Login_system implements Observer {
         }
     }
 
-    private boolean login(String username, String password) {
+    public void handleSucessLogin(){
+        try{
+            String response2 = is.readLine();
+            args[3] = response2;
+            System.out.println("response2: " + response2);
+            String response3 = is.readLine();
+            args[4] = response3;
+            System.out.println("response3: " + response3);
+        }catch (IOException e) {
+            System.out.println("handleSucessLogin " + e);
+        }
+    }
+
+    private String login(String username, String password) {
+        String response1 = "";
         try {
             initSocket();
             UserObject tmp = new UserObject(username, password);
@@ -126,10 +150,10 @@ public class Login_system implements Observer {
             args[5] = UserInfo;
             sendMsg(UserInfo);
 
-            String response1 = is.readLine();
+            response1 = is.readLine();
             System.out.println("response1: " + response1);
 
-            if (response1.equals("Success")) {
+            /*if (response1.equals("Success")) {
                 String response2 = is.readLine();
                 args[3] = response2;
                 System.out.println("response2: " + response2);
@@ -137,11 +161,11 @@ public class Login_system implements Observer {
                 args[4] = response3;
                 System.out.println("response3: " + response3);
                 return true;
-            }
+            }*/
         } catch (IOException e) {
             System.out.println(e);
         }
-        return false;
+        return response1;
     }
 
     private void sendMsg(String msg) {

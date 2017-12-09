@@ -23,18 +23,15 @@ public class ClientThread extends Thread {
 
     private Socket clientSocket = null;
     private ClientThread[] threads;
-    private final ServerEnd server;
 
-    public ClientThread(Socket clientSocket, ClientThread[] threads, ServerEnd server) {
+    public ClientThread(Socket clientSocket, ClientThread[] threads, String clientName) {
         this.clientSocket = clientSocket;
         this.threads = threads;
-        this.server = server;
+        this.clientName = "@" + clientName;
 
         try {
             is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintStream(clientSocket.getOutputStream());
-            System.out.println("initialized");
-
         } catch (IOException e) {
             System.out.println("ClientThread " + e);
         }
@@ -52,13 +49,9 @@ public class ClientThread extends Thread {
                 String line = is.readLine();
                 System.out.println(clientName + ": " + line);
 
-                //os.println(line);
-
                 if (line.startsWith("/quit")){
-                    System.out.println("prepare to break");
                     break;
                 }
-                // parse the message from clients.
                 parsePacket(line);
             }
             System.out.println("*** Bye " + clientName + " ***");
@@ -80,56 +73,9 @@ public class ClientThread extends Thread {
         }
     }
 
-    public boolean authenticate(){
-        boolean success = false;
-        try {
-            String msg = is.readLine();
-
-            System.out.println("receive msg: " + msg);
-            synchronized (this) {
-                UserObject user = new UserObject();
-                user.deParse(msg);
-                msg = server.checkLogin(user);
-                if (!msg.equals(ServerEnd.SUCCESS)) {
-                    os.println(msg);
-                    exitThread();
-                } else {
-                    user = DataManagement.INSTANCE.findUserByUserName(user.getUserName());
-                    List<UserInfo> friendList = user.getFriendList();
-                    List<UserInfo> blockList = user.getBlockList();
-                    StringBuilder friendInfo = new StringBuilder();
-                    StringBuilder blockInfo = new StringBuilder();
-                    for (int i = 0; i < friendList.size(); i++){
-                        friendInfo.append(friendList.get(i).getUserName() + "#");
-                    }
-                    for (int i = 0; i < blockList.size(); i++){
-                        blockInfo.append(blockList.get(i).getUserName() + "#");
-                    }
-                    clientName = "@" + user.getUserName();
-                    os.println(ServerEnd.SUCCESS);
-                    os.println(friendInfo.toString());
-                    os.println(blockInfo.toString());
-                    success = true;
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("ClientThread " + e);
-        }
-        return success;
-    }
-
-    public void exitThread() {
-        try {
-            is.close();
-            os.close();
-            clientSocket.close();
-        } catch (Exception e) {
-            System.out.println("ServeThread.exitThread() " + e);
-        }
-    }
-
     // parse the message from clients
     public void parsePacket(String line) {
+        System.out.println("line: " + line);
         String[] words = line.split("\\s", 2);
         if (words[0].equals("message")) {
             sendMessage(words[1]);
@@ -143,8 +89,6 @@ public class ClientThread extends Thread {
         String[] words = msg.split(":", 2);
         if (words.length > 1 && words[1] != null) {
             words[1] = words[1].trim();
-            System.out.println("check1: " + words[0]);
-            System.out.println("check2: " + words[1]);
             if (!words[1].isEmpty()) {
                 synchronized (this) {
                     for (int i = 0; i < threads.length; i++) {
@@ -153,7 +97,6 @@ public class ClientThread extends Thread {
                                 && threads[i].clientName != null
                                 && threads[i].clientName.equals(words[0])) {
                             threads[i].os.println(clientName + ": " + words[1]);
-                            //this.os.println(">" + clientName + "> " + words[1]);
                             break;
                         }
                     }

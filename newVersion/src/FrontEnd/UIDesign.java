@@ -13,8 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UIDesign extends JFrame
-{
+public class UIDesign extends JFrame {
     private List<UserInfo> friendList;
     private List<UserInfo> blockList;
     // Chat contents of different friends in friend list

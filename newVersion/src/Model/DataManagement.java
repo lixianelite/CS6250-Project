@@ -11,17 +11,10 @@ public class DataManagement {
 
     private List<UserObject> userList;
 
-    private Hashtable<String, UserObject> usersTable;
-    //used to authenticate
 
     public DataManagement(){
         userList = new ArrayList<>();
-        usersTable = new Hashtable<>();
         configuration();
-    }
-
-    public Hashtable<String, UserObject> getMap(){
-        return usersTable;
     }
 
     public UserObject findUserByUserName(String name){
@@ -33,34 +26,35 @@ public class DataManagement {
 
 
     private void configuration(){
-        UserObject user = new UserObject("user1", "user1");
-        UserInfo friend1 = new UserInfo("Bravado", "12.31.32.11");
-        UserInfo friend2 = new UserInfo("David", "323.323.323.233");
-        UserInfo friend3 = new UserInfo("Jack", "230.23.23.22");
+        UserObject user1 = new UserObject("user1", "user1");
+        UserInfo friend1 = new UserInfo("Bravado");
+        UserInfo friend2 = new UserInfo("David");
+        UserInfo friend3 = new UserInfo("Jack");
         UserInfo u2 = new UserInfo("user2");
         UserInfo u1 = new UserInfo("user1");
 
 
-        UserInfo block1 = new UserInfo("Jinlin", "12.3.2.3");
-        UserInfo block2 = new UserInfo("Ted", "32.23.33.33");
-        user.addFriend(friend1);
-        user.addFriend(friend2);
-        user.addFriend(friend3);
-        user.addFriend(u2);
-        user.addBlock(block1);
-        user.addBlock(block2);
+        UserInfo block1 = new UserInfo("Jinlin");
+        UserInfo block2 = new UserInfo("Ted");
+        user1.addFriend(friend1);
+        user1.addFriend(friend2);
+        user1.addFriend(friend3);
+        user1.addFriend(u2);
+        user1.addBlock(block1);
+        user1.addBlock(block2);
 
         UserObject user2 = new UserObject("user2", "user2");
-        UserInfo friend4 = new UserInfo("Yinlin Li", "233.23.3.2");
-        UserInfo friend5 = new UserInfo("Xiaoqin Zhu", "23.3.2.1");
-        UserInfo block3 = new UserInfo("Yu Zheng", "23.2.23");
-        UserInfo block4 = new UserInfo("Xian Li", "23.3.2.22");
+        UserInfo friend4 = new UserInfo("Yinlin Li");
+        UserInfo friend5 = new UserInfo("Xiaoqin Zhu");
+        UserInfo block3 = new UserInfo("Yu Zheng");
+        UserInfo block4 = new UserInfo("Xian Li");
         user2.addFriend(friend4);
         user2.addFriend(friend5);
         user2.addFriend(u1);
         user2.addBlock(block3);
         user2.addBlock(block4);
-        userList.add(user);
+
+        userList.add(user1);
         userList.add(user2);
     }
 

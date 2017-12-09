@@ -1,11 +1,17 @@
 package BackEnd;
 
 import Model.DataManagement;
+import Model.UserInfo;
 import Model.UserObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Created by bravado on 11/18/17.
@@ -19,13 +25,12 @@ public class ServerEnd {
     private ServerSocket serverSocket = null;
 
     private final int c_maxClientNum = 10;
-    private Hashtable<String, UserObject> userTable;
     private final ClientThread[] threads = new ClientThread[c_maxClientNum];
     private int portNum = 1234;
+    private BufferedReader is;
+    private PrintStream os;
 
     public ServerEnd() {
-        userTable = DataManagement.INSTANCE.getMap();
-
         for (int i = 0; i < c_maxClientNum; ++i) {
             threads[i] = null;
         }
@@ -42,23 +47,26 @@ public class ServerEnd {
         while (true) {
             try {
                 clientSocket = serverSocket.accept();
-
-                for (int i = 0; i < c_maxClientNum; ++i) {
-                    if (threads[i] == null) {
-                        ClientThread tmpThread = new ClientThread(clientSocket, threads, this);
-
-                        boolean success = tmpThread.authenticate();
-
-                        if (success) {
-                            System.out.println("ServerEnd Success");
+                is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                os = new PrintStream(clientSocket.getOutputStream());
+                String msg = is.readLine();
+                boolean success = authenticate(msg);
+                if (success){
+                    UserObject user = new UserObject();
+                    user.deParse(msg);
+                    for (int i = 0; i < c_maxClientNum; ++i) {
+                        if (threads[i] == null) {
+                            ClientThread tmpThread = new ClientThread(clientSocket, threads, user.getUserName());
                             threads[i] = tmpThread;
                             threads[i].start();
-                            System.out.println("thread" + i + " started");
                             break;
                         }
                     }
+                }else{
+                    is.close();
+                    os.close();
+                    clientSocket.close();
                 }
-
             } catch (IOException e) {
                 System.out.println("Server.runServer() " + e);
             }
@@ -73,6 +81,33 @@ public class ServerEnd {
         }
         if (user.getPassword().equals(loginUser.getPassword())) return SUCCESS;
         return WRONG_PASSWORD;
+    }
+
+    public boolean authenticate(String message){
+        boolean success = false;
+        UserObject user = new UserObject();
+        user.deParse(message);
+        String response = checkLogin(user);
+            if (!response.equals(SUCCESS)) {
+                os.println(response);
+            } else {
+                user = DataManagement.INSTANCE.findUserByUserName(user.getUserName());
+                List<UserInfo> friendList = user.getFriendList();
+                List<UserInfo> blockList = user.getBlockList();
+                StringBuilder friendInfo = new StringBuilder();
+                StringBuilder blockInfo = new StringBuilder();
+                for (int i = 0; i < friendList.size(); i++){
+                    friendInfo.append(friendList.get(i).getUserName() + "#");
+                }
+                for (int i = 0; i < blockList.size(); i++){
+                    blockInfo.append(blockList.get(i).getUserName() + "#");
+                }
+                os.println(ServerEnd.SUCCESS);
+                os.println(friendInfo.toString());
+                os.println(blockInfo.toString());
+                success = true;
+            }
+        return success;
     }
 
     public static void main(String args[]){
