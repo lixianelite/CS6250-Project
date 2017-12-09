@@ -58,28 +58,8 @@ public class ClientThread extends Thread {
                     System.out.println("prepare to break");
                     break;
                 }
-
-                String[] words = line.split("\\s", 2);
-
-
-                if (words.length > 1 && words[1] != null) {
-                    words[1] = words[1].trim();
-                    System.out.println("check1: " + words[0]);
-                    System.out.println("check2: " + words[1]);
-                    if (!words[1].isEmpty()) {
-                        synchronized (this) {
-                            for (int i = 0; i < threads.length; i++) {
-                                if (threads[i] != null && threads[i] != this
-                                        && threads[i].clientName != null
-                                        && threads[i].clientName.equals(words[0])) {
-                                    threads[i].os.println(clientName + ">> " + words[1]);
-                                    this.os.println(">" + clientName + "> " + words[1]);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
+                // parse the message from clients.
+                parsePacket(line);
             }
             System.out.println("*** Bye " + clientName + " ***");
 
@@ -109,7 +89,6 @@ public class ClientThread extends Thread {
             synchronized (this) {
                 UserObject user = new UserObject();
                 user.deParse(msg);
-
                 msg = server.checkLogin(user);
                 if (!msg.equals(ServerEnd.SUCCESS)) {
                     os.println(msg);
@@ -146,6 +125,40 @@ public class ClientThread extends Thread {
             clientSocket.close();
         } catch (Exception e) {
             System.out.println("ServeThread.exitThread() " + e);
+        }
+    }
+
+    // parse the message from clients
+    public void parsePacket(String line) {
+        String[] words = line.split("\\s", 2);
+        if (words[0].equals("message")) {
+            sendMessage(words[1]);
+        }
+        else if (words[0].equals("operation")) {
+            // Do operation here.
+        }
+    }
+
+    private void sendMessage(String msg) {
+        String[] words = msg.split(":", 2);
+        if (words.length > 1 && words[1] != null) {
+            words[1] = words[1].trim();
+            System.out.println("check1: " + words[0]);
+            System.out.println("check2: " + words[1]);
+            if (!words[1].isEmpty()) {
+                synchronized (this) {
+                    for (int i = 0; i < threads.length; i++) {
+                        if (threads[i] != null) System.out.println(threads[i].getUserName());
+                        if (threads[i] != null && threads[i] != this
+                                && threads[i].clientName != null
+                                && threads[i].clientName.equals(words[0])) {
+                            threads[i].os.println(clientName + ": " + words[1]);
+                            //this.os.println(">" + clientName + "> " + words[1]);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

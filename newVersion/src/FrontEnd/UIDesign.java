@@ -41,13 +41,28 @@ public class UIDesign extends JFrame
                 msg = is.readLine();
                 msg = is.readLine();
                 while (((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
-                    mb_displayAppend(msg);
+                    parseMessage(msg);
+                    //mb_displayAppend(msg);
                 }
             } catch (Exception e) {
                 System.out.println(e);
                 e.printStackTrace();
             }
             exitServer();
+        }
+
+        private void parseMessage(String msg) {
+            String name = msg.split(":", 2)[0];
+            for (int i = 0; i < friendList.size(); ++i) {
+                if (name.equals("@" + friendList.get(i).getUserName())) {
+                    if (i == selectedIndex) {
+                        mb_displayAppend(msg);
+                    }
+                    else {
+                        chats.get(i).append(msg+"\n");
+                    }
+                }
+            }
         }
     }
 
@@ -62,7 +77,7 @@ public class UIDesign extends JFrame
             String st = chats.get(selectedIndex).toString();
             m_display.setText(st);
             m_display.setCaretPosition(m_display.getText().length());
-            System.out.println(selectedIndex + " " + friendList.get(selectedIndex).getUserName());
+            //System.out.println(selectedIndex + " " + friendList.get(selectedIndex).getUserName());
         }
 
     }
@@ -108,12 +123,20 @@ public class UIDesign extends JFrame
         m_enter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
+                    // changed here
+                    // send message to target user.
                     String s = event.getActionCommand();
-                    s = "@" + userName + " " + s;
-                    mb_displayAppend("@" + userName + ": " + s);
+                    if (selectedIndex != -1) {
+                        os.println("message @" + friendList.get(selectedIndex).getUserName() + ":" + s);
+                        mb_displayAppend("@" + userName + ": " + s);
+                    }
                     m_enter.setText("");
 
-                    os.println(s);
+//                    s = "@" + userName + " " + s;
+//                    mb_displayAppend("@" + userName + ": " + s);
+//                    m_enter.setText("");
+//
+//                    os.println(s);
                 } catch(Exception e) {
                     System.err.println("error! " + e);
                     e.printStackTrace();
