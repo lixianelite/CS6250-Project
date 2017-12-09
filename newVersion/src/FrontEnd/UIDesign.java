@@ -52,9 +52,10 @@ public class UIDesign extends JFrame
         }
 
         private void parseMessage(String msg) {
+            msg = msg.replaceFirst("@" ,"");
             String name = msg.split(":", 2)[0];
             for (int i = 0; i < friendList.size(); ++i) {
-                if (name.equals("@" + friendList.get(i).getUserName())) {
+                if (name.equals(friendList.get(i).getUserName())) {
                     if (i == selectedIndex) {
                         mb_displayAppend(msg);
                     }
@@ -128,7 +129,7 @@ public class UIDesign extends JFrame
                     String s = event.getActionCommand();
                     if (selectedIndex != -1) {
                         os.println("message @" + friendList.get(selectedIndex).getUserName() + ":" + s);
-                        mb_displayAppend("@" + userName + ": " + s);
+                        mb_displayAppend(userName + ": " + s);
                     }
                     m_enter.setText("");
 
