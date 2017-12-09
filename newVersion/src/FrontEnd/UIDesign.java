@@ -180,6 +180,5 @@ public class UIDesign extends JFrame
         app.setSize(550,350);
         app.setVisible(true);
         app.mb_run(ipAddress, Integer.valueOf(port), userInfo, userName);
-
     }
 }
