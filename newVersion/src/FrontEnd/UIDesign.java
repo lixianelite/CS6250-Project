@@ -3,11 +3,12 @@ package FrontEnd;
 import Model.UserInfo;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +17,13 @@ public class UIDesign extends JFrame
 {
     private List<UserInfo> friendList;
     private List<UserInfo> blockList;
+    private List<StringBuilder> chats = new ArrayList<StringBuilder>();
     private JTextField m_enter;
     private JTextArea m_display;
     private String userName;
+
+    // index of selected friend index
+    private int selectedIndex = -1;
 
     private Socket socket;
     private BufferedReader is = null;
@@ -45,6 +50,21 @@ public class UIDesign extends JFrame
         }
     }
 
+    private class FriendListSelectionListener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            //System.out.println(e.getClass());
+            JList<String> fList = (JList<String>)e.getSource();
+            selectedIndex = fList.getSelectedIndex();
+            String st = chats.get(selectedIndex).toString();
+            m_display.setText(st);
+            m_display.setCaretPosition(m_display.getText().length());
+            System.out.println(selectedIndex + " " + friendList.get(selectedIndex).getUserName());
+        }
+
+    }
+
     public void exitServer() {
         try {
             socket.close();
@@ -68,11 +88,16 @@ public class UIDesign extends JFrame
         DefaultListModel<String> l1 = new DefaultListModel<>();
         for (UserInfo object : this.friendList){
             l1.addElement(object.getUserName());
+            StringBuilder sb = new StringBuilder();
+            sb.append("chat with " + object.getUserName() + ":\n");
+            chats.add(sb);
         }
 
         JList<String> fList = new JList<>(l1);
         fList.setBounds(100,100, 75,75);
         c.add(fList);
+
+        fList.addListSelectionListener(new FriendListSelectionListener());
 
         m_enter = new JTextField(20);
         m_enter.setBounds(50,50, 150,120);
@@ -81,8 +106,8 @@ public class UIDesign extends JFrame
             public void actionPerformed(ActionEvent event) {
                 try {
                     String s = event.getActionCommand();
-                    //s = "@" + userName + " " + s;
-                    //mb_displayAppend("@" + userName + ": " + s);
+                    s = "@" + userName + " " + s;
+                    mb_displayAppend("@" + userName + ": " + s);
                     m_enter.setText("");
 
                     os.println(s);
@@ -149,6 +174,9 @@ public class UIDesign extends JFrame
     }
 
     public void mb_displayAppend(String s) {
+        if (selectedIndex != -1) {
+            chats.get(selectedIndex).append(s + "\n");
+        }
         m_display.append(s + "\n");
         m_display.setCaretPosition(m_display.getText().length());
         m_enter.requestFocusInWindow();
