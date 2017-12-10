@@ -1,5 +1,6 @@
 package FrontEnd;
 
+import BackEnd.Server;
 import Model.UserInfo;
 
 import javax.swing.*;
@@ -25,6 +26,8 @@ public class UIDesign extends JFrame {
     private String userName;
 
     private int selectedIndex = -1;
+
+    private String host = "localhost";
 
     private Socket socket;
     private BufferedReader is = null;
@@ -84,7 +87,16 @@ public class UIDesign extends JFrame {
         try {
             receiveThread.interrupt();
             os.println("/quit");
-            Thread.sleep(200);
+            Thread.sleep(100);
+            os.close();
+            is.close();
+            socket.close();
+            // remove current user from login server
+            socket = new Socket(this.host, Server.loginPort);
+            os = new PrintStream(socket.getOutputStream());;
+            os.println("Logout " + this.userName);
+            Thread.sleep(100);
+            os.close();
             socket.close();
         } catch (Exception e) {
             System.err.println("error! " + e);

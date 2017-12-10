@@ -71,7 +71,7 @@ public class LoginServer {
     public void parseMessage() {
         try {
             String msg = is.readLine();
-            System.out.println("msg: " + msg);
+            System.out.println("Login Server's msg: " + msg);
             String[] options = msg.split("\\s", 2);
             System.out.println("options[0]: " + options[0]);
             System.out.println("options[1]: " + options[1]);
@@ -79,11 +79,24 @@ public class LoginServer {
                 authenticate(options[1]);
             } else if (options[0].equals("Registration")) {
                 Register(options[1]);
+            } else if (options[0].equals("Logout")) {
+                removeUser(options[1]);
             }
         }
         catch (Exception e){
             System.out.println("LoginServer.parseMessage()" + e);
         }
+    }
+
+    public void removeUser(String name) {
+        int selected = -1;
+        for (int i = 0; i < onlineUsers.size(); ++i) {
+            if (onlineUsers.get(i).equals(name)) {
+                selected = i;
+                break;
+            }
+        }
+        if (selected != -1) onlineUsers.remove(selected);
     }
 
     public void Register(String msg) {

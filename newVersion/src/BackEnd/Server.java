@@ -8,8 +8,8 @@ import java.io.IOException;
 public class Server {
     private static LoginServer loginSystem;
     private static ServerEnd chatSystem;
-    private static int loginPort = 2000;
-    private static int chatPort = 2001;
+    public static int loginPort = 2000;
+    public static int chatPort = 2001;
 
     public static void main(String args[]) {
         loginSystem = new LoginServer(loginPort);
