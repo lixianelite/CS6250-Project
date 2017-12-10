@@ -131,12 +131,6 @@ public class UIDesign extends JFrame {
                         mb_displayAppend(userName + ": " + s);
                     }
                     m_enter.setText("");
-
-//                    s = "@" + userName + " " + s;
-//                    mb_displayAppend("@" + userName + ": " + s);
-//                    m_enter.setText("");
-//
-//                    os.println(s);
                 } catch(Exception e) {
                     System.err.println("error! " + e);
                     e.printStackTrace();
