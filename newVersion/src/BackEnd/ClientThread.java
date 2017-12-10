@@ -56,7 +56,7 @@ public class ClientThread extends Thread {
                 }
                 parsePacket(line);
             }
-            System.out.println("*** Bye " + clientName + " ***");
+            //System.out.println("*** Bye " + clientName + " ***");
 
             synchronized (this) {
                 for (int i = 0; i < threads.length; i++) {
@@ -91,6 +91,7 @@ public class ClientThread extends Thread {
         }
         else if (words[0].equals("operation")) {
             System.out.println("words[1]: " + words[1]);
+
         }
     }
 

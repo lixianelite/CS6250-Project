@@ -11,7 +11,6 @@ public class DataManagement {
 
     private List<UserObject> userList;
 
-
     public DataManagement(){
         userList = new ArrayList<>();
         configuration();
