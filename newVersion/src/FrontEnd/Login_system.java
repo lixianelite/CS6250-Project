@@ -170,8 +170,6 @@ public class Login_system{
         os.println(msg);
     }
 
-
-
     public static void main(String[] args) {
         Login_system window = new Login_system();
         window.frame.setVisible(true);

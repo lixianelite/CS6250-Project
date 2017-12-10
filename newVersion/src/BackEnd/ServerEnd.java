@@ -22,6 +22,7 @@ public class ServerEnd {
     public static final String USER_ONLINE = "Account online";
     public static final String WRONG_PASSWORD = "Wrong password";
     public static final String SUCCESS = "Success";
+    public static final String ALREADY_EXIST = "Already Exist";
     private ServerSocket serverSocket = null;
 
     private final int c_maxClientNum = 10;
@@ -50,22 +51,40 @@ public class ServerEnd {
                 is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 os = new PrintStream(clientSocket.getOutputStream());
                 String msg = is.readLine();
-                boolean success = authenticate(msg);
-                if (success){
-                    UserObject user = new UserObject();
-                    user.deParse(msg);
-                    for (int i = 0; i < c_maxClientNum; ++i) {
-                        if (threads[i] == null) {
-                            ClientThread tmpThread = new ClientThread(clientSocket, threads, user.getUserName());
-                            threads[i] = tmpThread;
-                            threads[i].start();
-                            break;
+                System.out.println("msg: " + msg);
+                String[] options = msg.split("\\s", 2);
+                System.out.println("options[0]: " + options[0]);
+                System.out.println("options[1]: " + options[1]);
+                if (options[0].equals("Login")){
+                    boolean success = authenticate(options[1]);
+                    if (success){
+                        UserObject user = new UserObject();
+                        user.deParse(msg);
+                        for (int i = 0; i < c_maxClientNum; ++i) {
+                            if (threads[i] == null) {
+                                ClientThread tmpThread = new ClientThread(clientSocket, threads, user.getUserName());
+                                threads[i] = tmpThread;
+                                threads[i].start();
+                                break;
+                            }
                         }
+                    }else{
+                        is.close();
+                        os.close();
+                        clientSocket.close();
                     }
-                }else{
-                    is.close();
-                    os.close();
-                    clientSocket.close();
+                }else if (options[0].equals("Registration")){
+                    UserObject userObject = new UserObject();
+                    userObject.deParse(options[1]);
+                    UserObject user = DataManagement.INSTANCE.findUserByUserName(userObject.getUserName());
+                    if (user == null){
+                        DataManagement.INSTANCE.addUser(userObject);
+                        System.out.println("add success!");
+                        DataManagement.INSTANCE.printUserList();
+                        os.println(SUCCESS);
+                    }else {
+                        os.println(ALREADY_EXIST);
+                    }
                 }
             } catch (IOException e) {
                 System.out.println("Server.runServer() " + e);

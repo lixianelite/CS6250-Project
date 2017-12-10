@@ -74,15 +74,29 @@ public class Registration{
         frame.getContentPane().add(txtPasswordConfirm);
 
         indicate = new JLabel();
-        indicate.setBounds(155, 140, 120, 26);
+        indicate.setBounds(155, 155, 300, 26);
         frame.getContentPane().add(indicate);
 
         JButton btnLogin = new JButton("Register");
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("register performed");
+                String userName = txtUsername.getText();
+                String password = String.valueOf(txtPassword.getPassword());
+                String passwordConfirm = String.valueOf(txtPasswordConfirm.getPassword());
+                if (!password.equals(passwordConfirm)){
+                    indicate.setText("Password doesn't match!");
+                    return;
+                }else{
+                    String response = register(userName, password);
+                    if (response.equals("Already Exist")){
+                        indicate.setText("Already Exist");
+                    }else if (response.equals("Success")){
+                        frame.setVisible(false);
+                    }
+                }
             }
         });
+
         btnLogin.setBounds(100, 180, 117, 29);
         frame.getContentPane().add(btnLogin);
         JButton btnRegister = new JButton("Exit");
@@ -92,6 +106,7 @@ public class Registration{
                 frame.setVisible(false);
             }
         });
+
         btnRegister.setBounds(226, 180, 117, 29);
         frame.getContentPane().add(btnRegister);
     }
@@ -118,7 +133,7 @@ public class Registration{
         }
     }
 
-    public void handleSucessLogin(){
+    /*public void handleRegistration(){
         try{
             String response2 = is.readLine();
             System.out.println("response2: " + response2);
@@ -128,23 +143,24 @@ public class Registration{
         }catch (IOException e) {
             System.out.println("handleSucessLogin " + e);
         }
-    }
+    }*/
 
-    private String login(String username, String password) {
-        String response1 = "";
+    private String register(String username, String password) {
+        String response = "";
         try {
             initSocket();
             UserObject tmp = new UserObject(username, password);
-            String UserInfo = tmp.parse();
+            String UserInfo = "Registration " + tmp.parse();
+            System.out.println("UserInfo: " + UserInfo);
             sendMsg(UserInfo);
 
-            response1 = is.readLine();
-            System.out.println("response1: " + response1);
+            response = is.readLine();
+            System.out.println("response: " + response);
 
         } catch (IOException e) {
             System.out.println(e);
         }
-        return response1;
+        return response;
     }
 
     private void sendMsg(String msg) {

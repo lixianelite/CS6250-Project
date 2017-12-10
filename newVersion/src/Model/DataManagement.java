@@ -24,6 +24,16 @@ public class DataManagement {
         return null;
     }
 
+    public void addUser(UserObject user){
+        userList.add(user);
+    }
+
+    public void printUserList(){
+        for (int i = 0; i < userList.size(); i++){
+            System.out.print(userList.get(i).getUserName() + " ");
+        }
+        System.out.println();
+    }
 
     private void configuration(){
         UserObject user1 = new UserObject("user1", "user1");
