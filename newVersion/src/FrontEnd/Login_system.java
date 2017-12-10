@@ -2,17 +2,13 @@ package FrontEnd;
 
 
 import BackEnd.ServerEnd;
-import Model.UserInfo;
 import Model.UserObject;
-import com.sun.org.apache.regexp.internal.RE;
-
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
@@ -23,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.*;
 
 public class Login_system{
     private JFrame frame;
@@ -153,7 +148,7 @@ public class Login_system{
         try {
             initSocket();
             UserObject tmp = new UserObject(username, password);
-            String UserInfo = tmp.parse();
+            String UserInfo = "Login " + tmp.parse();
             args[5] = UserInfo;
             sendMsg(UserInfo);
 

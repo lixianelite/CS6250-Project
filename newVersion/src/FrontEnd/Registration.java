@@ -91,6 +91,7 @@ public class Registration{
                     if (response.equals("Already Exist")){
                         indicate.setText("Already Exist");
                     }else if (response.equals("Success")){
+                        socketClose();
                         frame.setVisible(false);
                     }
                 }
@@ -132,18 +133,6 @@ public class Registration{
             System.out.println("Close " + e);
         }
     }
-
-    /*public void handleRegistration(){
-        try{
-            String response2 = is.readLine();
-            System.out.println("response2: " + response2);
-            String response3 = is.readLine();
-
-            System.out.println("response3: " + response3);
-        }catch (IOException e) {
-            System.out.println("handleSucessLogin " + e);
-        }
-    }*/
 
     private String register(String username, String password) {
         String response = "";

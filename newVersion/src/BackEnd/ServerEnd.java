@@ -59,7 +59,7 @@ public class ServerEnd {
                     boolean success = authenticate(options[1]);
                     if (success){
                         UserObject user = new UserObject();
-                        user.deParse(msg);
+                        user.deParse(options[1]);
                         for (int i = 0; i < c_maxClientNum; ++i) {
                             if (threads[i] == null) {
                                 ClientThread tmpThread = new ClientThread(clientSocket, threads, user.getUserName());
