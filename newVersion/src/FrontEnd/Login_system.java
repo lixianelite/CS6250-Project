@@ -31,8 +31,8 @@ public class Login_system{
     private BufferedReader is = null;
     private PrintStream os = null;
 
-    private int loginPort = 1000;
-    private int chatPort = 1001;
+    private int loginPort = 2000;
+    private int chatPort = 2001;
 
     private String[] args;
 

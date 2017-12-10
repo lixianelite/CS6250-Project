@@ -27,7 +27,7 @@ public class Registration{
     private BufferedReader is = null;
     private PrintStream os = null;
 
-    private static int portNum = 1000;
+    private static int portNum = 2000;
     private static String host = "localhost";
 
     public Registration() {

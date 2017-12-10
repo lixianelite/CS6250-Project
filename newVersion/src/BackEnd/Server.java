@@ -6,8 +6,8 @@ package BackEnd;
 public class Server {
     private static LoginServer loginSystem;
     private static ServerEnd chatSystem;
-    private static int loginPort = 1000;
-    private static int chatPort = 1001;
+    private static int loginPort = 2000;
+    private static int chatPort = 2001;
 
     public static void main(String args[]) {
         loginSystem = new LoginServer(loginPort);

@@ -22,7 +22,7 @@ public class ServerEnd {
 
     private final int c_maxClientNum = 10;
     private final ClientThread[] threads = new ClientThread[c_maxClientNum];
-    private int portNum = 1234;
+    private int portNum = 2001;
     private BufferedReader is;
     private PrintStream os;
 
