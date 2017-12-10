@@ -81,7 +81,7 @@ public class ClientThread extends Thread {
             sendMessage(words[1]);
         }
         else if (words[0].equals("operation")) {
-            // Do operation here.
+            System.out.println("words[1]: " + words[1]);
         }
     }
 
