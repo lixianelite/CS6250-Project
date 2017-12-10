@@ -1,7 +1,5 @@
 package FrontEnd;
 
-import BackEnd.ServerEnd;
-
 import Model.UserObject;
 
 import javax.swing.*;

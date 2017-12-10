@@ -24,7 +24,6 @@ public class UIDesign extends JFrame {
     private JTextArea m_display;
     private String userName;
 
-    // index of selected friend index
     private int selectedIndex = -1;
 
     private Socket socket;
@@ -147,12 +146,12 @@ public class UIDesign extends JFrame {
         panel.add(label);
         panel.add(m_enter);
 
-        JPanel spanel=new JPanel();
+        JPanel spanel = new JPanel();
         spanel.setLayout(new GridLayout(1, 2));
-        JButton b1=new JButton("Add Friend List");
-        JButton b2=new JButton("Add Block List");
+        JButton addFriend = new JButton("Add Friend List");
+        JButton addBlock = new JButton("Add Block List");
 
-        b1.addActionListener(new ActionListener() {
+        addFriend.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -166,15 +165,36 @@ public class UIDesign extends JFrame {
                 JLabel label1 = new JLabel("Input Username: ");
                 label1.setBounds(20, 20, 150, 20);
 
+                JLabel indicate = new JLabel("indicate");
+                indicate.setBounds(20, 40, 150, 20);
+
                 JButton Add = new JButton("Add");
                 Add.setBounds(150, 50, 100, 20);
 
                 JButton Cancel = new JButton("Cancel");
                 Cancel.setBounds(275, 50, 100, 20);
 
+                Add.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String name = tx1.getText();
+                        System.out.println("name: " + name);
+                        os.println("operation " + name);
+                        tx1.setText("");
+                    }
+                });
+
+                Cancel.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        mydialog.setVisible(false);
+                    }
+                });
+
                 JPanel pan = new JPanel();
                 pan.setLayout(null);
                 pan.add(label1);
+                pan.add(indicate);
                 pan.add(tx1);
                 pan.add(Add);
                 pan.add(Cancel);
@@ -183,8 +203,55 @@ public class UIDesign extends JFrame {
             }
         });
 
-        spanel.add(b1);
-        spanel.add(b2);
+        addBlock.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog;
+                dialog= new JDialog();
+                dialog.setSize(new Dimension(400,100));
+                dialog.setTitle("Add Block");
+                JTextField tx1 = new JTextField();
+                tx1.setBounds(130, 20, 250, 20);
+
+                JLabel label1 = new JLabel("Input Username: ");
+                label1.setBounds(20, 20, 150, 20);
+
+                JButton Add = new JButton("Add");
+                Add.setBounds(150, 50, 100, 20);
+
+                JButton Cancel = new JButton("Cancel");
+                Cancel.setBounds(275, 50, 100, 20);
+
+                Add.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String name = tx1.getText();
+                        System.out.println("name: " + name);
+                        os.println("operation " + name);
+                        tx1.setText("");
+                    }
+                });
+
+                Cancel.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dialog.setVisible(false);
+                    }
+                });
+
+                JPanel pan = new JPanel();
+                pan.setLayout(null);
+                pan.add(label1);
+                pan.add(tx1);
+                pan.add(Add);
+                pan.add(Cancel);
+                dialog.add(pan);
+                dialog.setVisible(true);
+            }
+        });
+
+        spanel.add(addFriend);
+        spanel.add(addBlock);
 
         panel.add(spanel);
 
@@ -220,8 +287,7 @@ public class UIDesign extends JFrame {
         m_enter.requestFocusInWindow();
     }
 
-    public boolean mb_isEndSession(String m)
-    {
+    public boolean mb_isEndSession(String m) {
         if(m.equalsIgnoreCase("q")) {
             return(true);
         }
