@@ -23,6 +23,8 @@ public class UserObject extends PacketObject {
     public UserObject(){
         userName = "";
         password = "";
+        friendList = new ArrayList<>();
+        blockList = new ArrayList<>();
     }
 
     public void addFriend(UserInfo friend){
