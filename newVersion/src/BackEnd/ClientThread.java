@@ -33,7 +33,8 @@ public class ClientThread extends Thread {
         try {
             is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintStream(clientSocket.getOutputStream());
-            System.out.println("initialized");
+            clientName = "@" + is.readLine();
+            System.out.println("client thread initialized");
 
         } catch (IOException e) {
             System.out.println("ClientThread " + e);
@@ -78,44 +79,6 @@ public class ClientThread extends Thread {
         } catch (IOException e) {
             System.out.println("multiThreading error: " + e);
         }
-    }
-
-    public boolean authenticate(){
-        boolean success = false;
-        try {
-            String msg = is.readLine();
-
-            System.out.println("receive msg: " + msg);
-            synchronized (this) {
-                UserObject user = new UserObject();
-                user.deParse(msg);
-                msg = server.checkLogin(user);
-                if (!msg.equals(ServerEnd.SUCCESS)) {
-                    os.println(msg);
-                    exitThread();
-                } else {
-                    user = DataManagement.INSTANCE.findUserByUserName(user.getUserName());
-                    List<UserInfo> friendList = user.getFriendList();
-                    List<UserInfo> blockList = user.getBlockList();
-                    StringBuilder friendInfo = new StringBuilder();
-                    StringBuilder blockInfo = new StringBuilder();
-                    for (int i = 0; i < friendList.size(); i++){
-                        friendInfo.append(friendList.get(i).getUserName() + "#");
-                    }
-                    for (int i = 0; i < blockList.size(); i++){
-                        blockInfo.append(blockList.get(i).getUserName() + "#");
-                    }
-                    clientName = "@" + user.getUserName();
-                    os.println(ServerEnd.SUCCESS);
-                    os.println(friendInfo.toString());
-                    os.println(blockInfo.toString());
-                    success = true;
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("ClientThread " + e);
-        }
-        return success;
     }
 
     public void exitThread() {

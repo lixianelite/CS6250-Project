@@ -8,6 +8,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -37,9 +38,9 @@ public class UIDesign extends JFrame
         public void run() {
             try {
                 String msg;
-                msg = is.readLine();
-                msg = is.readLine();
-                msg = is.readLine();
+//                msg = is.readLine();
+//                msg = is.readLine();
+//                msg = is.readLine();
                 while (((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
                     parseMessage(msg);
                     //mb_displayAppend(msg);
@@ -133,11 +134,6 @@ public class UIDesign extends JFrame
                     }
                     m_enter.setText("");
 
-//                    s = "@" + userName + " " + s;
-//                    mb_displayAppend("@" + userName + ": " + s);
-//                    m_enter.setText("");
-//
-//                    os.println(s);
                 } catch(Exception e) {
                     System.err.println("error! " + e);
                     e.printStackTrace();
@@ -245,7 +241,7 @@ public class UIDesign extends JFrame
             socket = new Socket(host, port);
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             os = new PrintStream(socket.getOutputStream());
-            os.println(UserInfo);
+            os.println(userName);
             m_enter.setEnabled(true);
             receiveThread = new ReceiveThread();
             receiveThread.start();

@@ -12,10 +12,6 @@ import java.util.Hashtable;
  */
 
 public class ServerEnd {
-    public static final String NO_USER = "No such user";
-    public static final String USER_ONLINE = "Account online";
-    public static final String WRONG_PASSWORD = "Wrong password";
-    public static final String SUCCESS = "Success";
     private ServerSocket serverSocket = null;
 
     private final int c_maxClientNum = 10;
@@ -23,9 +19,9 @@ public class ServerEnd {
     private final ClientThread[] threads = new ClientThread[c_maxClientNum];
     private int portNum = 1234;
 
-    public ServerEnd() {
+    public ServerEnd(int portNum) {
         userTable = DataManagement.INSTANCE.getMap();
-
+        this.portNum = portNum;
         for (int i = 0; i < c_maxClientNum; ++i) {
             threads[i] = null;
         }
@@ -47,15 +43,11 @@ public class ServerEnd {
                     if (threads[i] == null) {
                         ClientThread tmpThread = new ClientThread(clientSocket, threads, this);
 
-                        boolean success = tmpThread.authenticate();
-
-                        if (success) {
-                            System.out.println("ServerEnd Success");
-                            threads[i] = tmpThread;
-                            threads[i].start();
-                            System.out.println("thread" + i + " started");
-                            break;
-                        }
+                        System.out.println("ServerEnd Success");
+                        threads[i] = tmpThread;
+                        threads[i].start();
+                        System.out.println("thread" + i + " started");
+                        break;
                     }
                 }
 
@@ -65,18 +57,8 @@ public class ServerEnd {
         }
     }
 
-    public String checkLogin(UserObject loginUser) {
-        UserObject user = DataManagement.INSTANCE.findUserByUserName(loginUser.getUserName());
-        if (user == null) return NO_USER;
-        for (int i = 0; i < threads.length; i++){
-            if (threads[i] != null && threads[i].getUserName().equals("@" + user.getUserName())) return USER_ONLINE;
-        }
-        if (user.getPassword().equals(loginUser.getPassword())) return SUCCESS;
-        return WRONG_PASSWORD;
-    }
-
     public static void main(String args[]){
-        ServerEnd serverEnd = new ServerEnd();
+        ServerEnd serverEnd = new ServerEnd(1001);
         System.out.println("server runs");
         serverEnd.runServer();
     }

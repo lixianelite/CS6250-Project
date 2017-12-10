@@ -32,6 +32,9 @@ public class Login_system implements Observer {
     private BufferedReader is = null;
     private PrintStream os = null;
 
+    private int loginPort = 1000;
+    private int chatPort = 1001;
+
     private String[] args;
 
     public Login_system() {
@@ -96,12 +99,12 @@ public class Login_system implements Observer {
 
     public void initSocket() {
         try {
-            socket = new Socket("localhost", 1234);
+            socket = new Socket("localhost", loginPort);
             args[0] = "localhost";
-            args[1] = 1234 + "";
+            args[1] = chatPort + "";
             os = new PrintStream(socket.getOutputStream());
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("Successfully connect to server");
+            System.out.println("Successfully connect to login system");
         } catch (IOException e) {
             System.out.println("ClientApp.initSocket() " + e);
         }
@@ -112,7 +115,7 @@ public class Login_system implements Observer {
             os.close();
             is.close();
             socket.close();
-            System.out.println("socket close Successfully");
+            System.out.println("login socket close Successfully");
         } catch (IOException e) {
             System.out.println("Close " + e);
         }
@@ -147,8 +150,6 @@ public class Login_system implements Observer {
     private void sendMsg(String msg) {
         os.println(msg);
     }
-
-
 
     public static void main(String[] args) {
         Login_system window = new Login_system();
