@@ -1,5 +1,7 @@
 package BackEnd;
 
+import java.io.IOException;
+
 /**
  * Created by Allam on 2017/12/9.
  */
@@ -16,6 +18,7 @@ public class Server {
         Thread thread1 = new Thread() {
             @Override
             public void run() {
+                System.out.println("start login server");
                 loginSystem.runServer();
             }
         };
@@ -23,12 +26,21 @@ public class Server {
         Thread thread2 = new Thread() {
             @Override
             public void run() {
+                System.out.println("start chatting server");
                 chatSystem.runServer();
             }
         };
 
         thread1.start();
         thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        }
+        catch (Exception e) {
+            System.out.println("error in servers: " + e);
+        }
 
     }
 }
