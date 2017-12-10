@@ -49,7 +49,7 @@ public class ClientThread extends Thread {
         ClientThread[] threads = this.threads;
 
         try {
-            while (true) {
+            while (!isInterrupted()) {
                 String line = is.readLine();
                 System.out.println(clientName + ": " + line);
 
@@ -72,10 +72,7 @@ public class ClientThread extends Thread {
                 }
             }
 
-            is.close();
-            os.close();
-            clientSocket.close();
-            System.out.println("clientSocket closed");
+            exitThread();
         } catch (IOException e) {
             System.out.println("multiThreading error: " + e);
         }

@@ -8,6 +8,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.Socket;
@@ -38,10 +39,7 @@ public class UIDesign extends JFrame
         public void run() {
             try {
                 String msg;
-//                msg = is.readLine();
-//                msg = is.readLine();
-//                msg = is.readLine();
-                while (((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
+                while ((!isInterrupted()) && ((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
                     parseMessage(msg);
                     //mb_displayAppend(msg);
                 }
@@ -49,7 +47,7 @@ public class UIDesign extends JFrame
                 System.out.println(e);
                 e.printStackTrace();
             }
-            exitServer();
+            System.out.println("receive thread stopped");
         }
 
         private void parseMessage(String msg) {
@@ -86,8 +84,10 @@ public class UIDesign extends JFrame
 
     public void exitServer() {
         try {
+            receiveThread.interrupt();
+            os.println("/quit");
+            Thread.sleep(200);
             socket.close();
-            receiveThread.join();
         } catch (Exception e) {
             System.err.println("error! " + e);
             e.printStackTrace();
@@ -194,6 +194,14 @@ public class UIDesign extends JFrame
         c.add(bList);
         c.setLayout(new GridLayout(2,2));
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("close window now");
+                exitServer();
+                System.exit(0);
+            }
+        });
     }
 
     public void mb_displayAppend(String s) {
