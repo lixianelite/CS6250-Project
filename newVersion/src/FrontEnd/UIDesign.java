@@ -160,18 +160,26 @@ public class UIDesign extends JFrame {
                 mydialog= new JDialog();
                 mydialog.setSize(new Dimension(400,100));
                 mydialog.setTitle("Add Friends");
-                mydialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL); // prevent user from doing something else
-                mydialog.setVisible(true);
+                JTextField tx1 = new JTextField();
+                tx1.setBounds(130, 20, 250, 20);
 
-                JPanel pan=new JPanel();
-                //pan.setLayout(new FlowLayout());
-                JTextField tx1=new JTextField();
+                JLabel label1 = new JLabel("Input Username: ");
+                label1.setBounds(20, 20, 150, 20);
 
-                tx1.setBounds(10, 10, 40, 20);
+                JButton Add = new JButton("Add");
+                Add.setBounds(150, 50, 100, 20);
 
+                JButton Cancel = new JButton("Cancel");
+                Cancel.setBounds(275, 50, 100, 20);
+
+                JPanel pan = new JPanel();
+                pan.setLayout(null);
+                pan.add(label1);
                 pan.add(tx1);
-
+                pan.add(Add);
+                pan.add(Cancel);
                 mydialog.add(pan);
+                mydialog.setVisible(true);
             }
         });
 
