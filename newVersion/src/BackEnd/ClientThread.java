@@ -24,14 +24,16 @@ public class ClientThread extends Thread {
     private Socket clientSocket = null;
     private ClientThread[] threads;
 
-    public ClientThread(Socket clientSocket, ClientThread[] threads, String clientName) {
+    public ClientThread(Socket clientSocket, ClientThread[] threads) {
         this.clientSocket = clientSocket;
         this.threads = threads;
-        this.clientName = "@" + clientName;
 
         try {
             is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             os = new PrintStream(clientSocket.getOutputStream());
+            clientName = "@" + is.readLine();
+            System.out.println("client thread initialized");
+
         } catch (IOException e) {
             System.out.println("ClientThread " + e);
         }
@@ -70,6 +72,16 @@ public class ClientThread extends Thread {
             System.out.println("clientSocket closed");
         } catch (IOException e) {
             System.out.println("multiThreading error: " + e);
+        }
+    }
+
+    public void exitThread() {
+        try {
+            is.close();
+            os.close();
+            clientSocket.close();
+        } catch (Exception e) {
+            System.out.println("ServeThread.exitThread() " + e);
         }
     }
 

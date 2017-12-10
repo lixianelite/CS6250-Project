@@ -3,7 +3,6 @@ package FrontEnd;
 import BackEnd.ServerEnd;
 
 import Model.UserObject;
-import oracle.jvm.hotspot.jfr.JFR;
 
 import javax.swing.*;
 
@@ -29,6 +28,9 @@ public class Registration{
 
     private BufferedReader is = null;
     private PrintStream os = null;
+
+    private static int portNum = 1000;
+    private static String host = "localhost";
 
     public Registration() {
         initialize();
@@ -114,7 +116,7 @@ public class Registration{
 
     public void initSocket() {
         try {
-            socket = new Socket("localhost", 1234);
+            socket = new Socket(host, portNum);
             os = new PrintStream(socket.getOutputStream());
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Successfully connect to server");

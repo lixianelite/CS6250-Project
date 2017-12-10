@@ -1,6 +1,7 @@
 package FrontEnd;
 
 
+import BackEnd.LoginServer;
 import BackEnd.ServerEnd;
 import Model.UserObject;
 import java.awt.event.ActionEvent;
@@ -29,6 +30,9 @@ public class Login_system{
 
     private BufferedReader is = null;
     private PrintStream os = null;
+
+    private int loginPort = 1000;
+    private int chatPort = 1001;
 
     private String[] args;
 
@@ -78,7 +82,7 @@ public class Login_system{
 
                 String responseMessage = login(username, password);
 
-                if (responseMessage.equals(ServerEnd.SUCCESS)){
+                if (responseMessage.equals(LoginServer.SUCCESS)){
                     handleSucessLogin();
                     os.println("/quit");
                     socketClose();
@@ -108,12 +112,12 @@ public class Login_system{
 
     public void initSocket() {
         try {
-            socket = new Socket("localhost", 1234);
+            socket = new Socket("localhost", loginPort);
             args[0] = "localhost";
-            args[1] = 1234 + "";
+            args[1] = chatPort + "";
             os = new PrintStream(socket.getOutputStream());
             is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("Successfully connect to server");
+            System.out.println("Successfully connect to login system");
         } catch (IOException e) {
             System.out.println("ClientApp.initSocket() " + e);
         }
@@ -124,7 +128,7 @@ public class Login_system{
             os.close();
             is.close();
             socket.close();
-            System.out.println("socket close Successfully");
+            System.out.println("login socket close Successfully");
         } catch (IOException e) {
             System.out.println("Close " + e);
         }
