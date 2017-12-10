@@ -180,6 +180,7 @@ public class UIDesign extends JFrame {
                         System.out.println("name: " + name);
                         os.println("operation " + name);
                         tx1.setText("");
+                        tx1.requestFocus();
                     }
                 });
 
@@ -221,6 +222,9 @@ public class UIDesign extends JFrame {
                 JButton Cancel = new JButton("Cancel");
                 Cancel.setBounds(275, 50, 100, 20);
 
+                JLabel indicate = new JLabel("indicate");
+                indicate.setBounds(20, 40, 150, 20);
+
                 Add.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -241,6 +245,7 @@ public class UIDesign extends JFrame {
                 JPanel pan = new JPanel();
                 pan.setLayout(null);
                 pan.add(label1);
+                pan.add(indicate);
                 pan.add(tx1);
                 pan.add(Add);
                 pan.add(Cancel);
