@@ -4,6 +4,7 @@ import Model.DataManagement;
 import Model.UserInfo;
 import Model.UserObject;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -81,9 +82,34 @@ public class ClientThread extends Thread {
             sendMessage(words[1]);
         }
         else if (words[0].equals("operation")) {
-            System.out.println("words[1]: " + words[1]);
+            processAdd(words[1]);
 
         }
+    }
+
+    private String processAdd(String operation){
+        String[] contents = operation.split("\\s", 2);
+        String name = contents[1];
+        if (contents[0].equals("FRIEND")){
+            System.out.println("NAME: Friend " + name);
+            String cName = clientName.substring(1);
+            UserObject userObject = DataManagement.INSTANCE.findUserByUserName(cName);
+            List<UserInfo> blockList = userObject.getBlockList();
+            for (int i = 0; i < blockList.size(); i++){
+                if (name.equals(blockList.get(i).getUserName())){
+                    blockList.remove(i);
+                }
+            }
+            userObject = DataManagement.INSTANCE.findUserByUserName(name);
+            List<UserInfo> friendList = userObject.getFriendList();
+            if (userObject != null){
+
+            }
+            System.out.println("cName: " + cName);
+        }else if (contents[0].equals("BLOCK")){
+            System.out.println("NAME: Block " + name);
+        }
+        return "";
     }
 
     private void sendMessage(String msg) {

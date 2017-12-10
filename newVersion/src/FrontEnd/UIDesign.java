@@ -154,10 +154,10 @@ public class UIDesign extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog mydialog;
-                mydialog= new JDialog();
-                mydialog.setSize(new Dimension(400,100));
-                mydialog.setTitle("Add Friends");
+                JDialog dialog;
+                dialog= new JDialog();
+                dialog.setSize(new Dimension(400,100));
+                dialog.setTitle("Add Friends");
                 JTextField tx1 = new JTextField();
                 tx1.setBounds(130, 20, 250, 20);
 
@@ -178,7 +178,7 @@ public class UIDesign extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         String name = tx1.getText();
                         System.out.println("name: " + name);
-                        os.println("operation " + name);
+                        os.println("operation FRIEND " + name);
                         tx1.setText("");
                         tx1.requestFocus();
                     }
@@ -187,7 +187,7 @@ public class UIDesign extends JFrame {
                 Cancel.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        mydialog.setVisible(false);
+                        dialog.setVisible(false);
                     }
                 });
 
@@ -198,8 +198,8 @@ public class UIDesign extends JFrame {
                 pan.add(tx1);
                 pan.add(Add);
                 pan.add(Cancel);
-                mydialog.add(pan);
-                mydialog.setVisible(true);
+                dialog.add(pan);
+                dialog.setVisible(true);
             }
         });
 
@@ -230,8 +230,9 @@ public class UIDesign extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         String name = tx1.getText();
                         System.out.println("name: " + name);
-                        os.println("operation " + name);
+                        os.println("operation BLOCK " + name);
                         tx1.setText("");
+                        tx1.requestFocus();
                     }
                 });
 
