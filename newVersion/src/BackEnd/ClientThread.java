@@ -106,12 +106,14 @@ public class ClientThread extends Thread {
         if (searchObject != null){
             if (contents[0].equals("FRIEND")){
                 System.out.println("NAME: " + name);
-                removeUserFromList(blockList, name);
+                removeUserFromList(blockList, name, "BLOCK");
                 friendList.add(new UserInfo(searchObject.getUserName()));
+                this.os.println("@admin:add FRIEND " + name);
                 System.out.println("cName: " + cName);
             }else if (contents[0].equals("BLOCK")){
-                removeUserFromList(friendList, name);
+                removeUserFromList(friendList, name, "FRIEND");
                 blockList.add(new UserInfo(searchObject.getUserName()));
+                this.os.println("@admin:add BLOCK " + name);
             }
         }else {
             return "USER_NOT_EXIST";
@@ -119,9 +121,12 @@ public class ClientThread extends Thread {
         return "SUCCESS";
     }
 
-    private void removeUserFromList(List<UserInfo> list, String name){
+    private void removeUserFromList(List<UserInfo> list, String name, String listName){
         for (int i = 0; i < list.size(); i++){
-            if (name.equals(list.get(i).getUserName())) list.remove(i);
+            if (name.equals(list.get(i).getUserName())){
+                list.remove(i);
+                this.os.println("@admin:remove "+ listName + " " + name);
+            }
         }
     }
 

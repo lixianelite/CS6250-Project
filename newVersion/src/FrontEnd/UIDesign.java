@@ -47,7 +47,9 @@ public class UIDesign extends JFrame {
             try {
                 String msg;
                 while ((!isInterrupted()) && ((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
-                    parseMessage(msg);
+                    synchronized (this) {
+                        parseMessage(msg);
+                    }
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -63,11 +65,58 @@ public class UIDesign extends JFrame {
             String response = msg.split(":", 2)[1];
             if (name.equals("admin")){
                 System.out.println("admin response: " + response);
-                createDialog(response);
-                if (response == "SUCCESS"){
-                    //remove people from block list
-                    //add people to friend list
-                    //vice versa
+                if (response.equals("SUCCESS")){
+                    createDialog(response);
+                    System.out.println("successful operation");
+                }
+                else {
+                    String[] words = response.split(" ");
+                    System.out.println(words[0] + " " + words[1] + " " + words[2]);
+                    if (words[1].equals("FRIEND")) {
+                        if (words[0].equals("add")) {
+                            l1.addElement(words[2]);
+                            friendList.add(new UserInfo(words[2]));
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("chat with " + words[2] + ":\n");
+                            chats.add(sb);
+                        }
+                        else if (words[0].equals("remove")) {
+                            int index = -1;
+                            for (int i = 0; i < friendList.size(); ++i) {
+                                if (friendList.get(i).getUserName().equals(words[2])) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            System.out.println("index: " + index);
+                            if (index != -1) {
+                                l1.remove(index);
+                                friendList.remove(index);
+                                chats.remove(index);
+                                selectedIndex = -1;
+                                m_display.setText("");
+                            }
+                        }
+                    }
+                    else if (words[1].equals("BLOCK")) {
+                        if (words[0].equals("add")) {
+                            l2.addElement(words[2]);
+                            blockList.add(new UserInfo(words[2]));
+                        }
+                        else if (words[0].equals("remove")) {
+                            int index = -1;
+                            for (int i = 0; i < blockList.size(); ++i) {
+                                if (blockList.get(i).getUserName().equals(words[2])) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if (index != -1) {
+                                blockList.remove(index);
+                                l2.remove(index);
+                            }
+                        }
+                    }
                 }
             }else if (name.equals("extra")){
                 createDialog(response);
@@ -93,9 +142,15 @@ public class UIDesign extends JFrame {
         public void valueChanged(ListSelectionEvent e) {
             JList<String> fList = (JList<String>)e.getSource();
             selectedIndex = fList.getSelectedIndex();
-            String st = chats.get(selectedIndex).toString();
-            m_display.setText(st);
-            m_display.setCaretPosition(m_display.getText().length());
+            if (selectedIndex != -1) {
+                String st = chats.get(selectedIndex).toString();
+                m_display.setText(st);
+                m_display.setCaretPosition(m_display.getText().length());
+            }
+            else {
+                m_display.setText("");
+                m_display.setCaretPosition(m_display.getText().length());
+            }
         }
     }
 
@@ -350,7 +405,7 @@ public class UIDesign extends JFrame {
 
         container.add(panel);
 
-        DefaultListModel<String> l2 = new DefaultListModel<>();
+        l2 = new DefaultListModel<>();
         for (UserInfo object : this.blockList){
             l2.addElement(object.getUserName());
         }
