@@ -171,17 +171,81 @@ public class UIDesign extends JFrame {
         });
 
         JPanel panel = new JPanel();
-        JLabel label = new JLabel("Type sentences here:");
-
+        //JLabel label = new JLabel("Type sentences here:");
+        JButton chooseRoom=new JButton("Choose a chat room");
+        
+        
         panel.setLayout(new GridLayout(3, 1));
 
-        panel.add(label);
+        panel.add(chooseRoom);
         panel.add(m_enter);
 
         JPanel spanel = new JPanel();
         spanel.setLayout(new GridLayout(1, 2));
         JButton addFriend = new JButton("Add Friend List");
         JButton addBlock = new JButton("Add Block List");
+        
+        addFriend.setPreferredSize(new Dimension(20, 20));
+        addBlock.setPreferredSize(new Dimension(20, 20));
+
+        chooseRoom.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog mydialog;
+                mydialog= new JDialog();
+                mydialog.setSize(new Dimension(400,100));
+                mydialog.setTitle("Choose chatroom");
+
+                JTextField tx1 = new JTextField();
+                tx1.setBounds(10, 50, 100, 20);
+
+                //JLabel label1 = new JLabel("Chatroom number: ");
+                //label1.setBounds(20, 20, 150, 20);
+
+                //JLabel indicate = new JLabel("indicate");
+                //indicate.setBounds(20, 40, 150, 20);
+
+                JButton Add = new JButton("Join");
+                Add.setBounds(150, 50, 100, 20);
+
+                JButton Cancel = new JButton("Cancel");
+                Cancel.setBounds(275, 50, 100, 20);
+
+                Add.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String name = tx1.getText();
+                        System.out.println("name: " + name);
+                        tx1.setText("");
+                        tx1.requestFocus();
+                        mydialog.setVisible(false);
+
+                        ChatRoom chatRoom = new ChatRoom(name, userName);
+                        chatRoom.setVisible(true);
+                    }
+                });
+
+                Cancel.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        mydialog.setVisible(false);
+                    }
+                });
+
+                JPanel pan = new JPanel();
+                pan.setLayout(null);
+                //pan.add(label1);
+                //pan.add(indicate);
+
+                pan.add(tx1);
+                pan.add(Add);
+                pan.add(Cancel);
+                mydialog.add(pan);
+                mydialog.setVisible(true);
+            }
+
+        });
+
 
         addFriend.addActionListener(new ActionListener() {
             @Override
