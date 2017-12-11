@@ -241,6 +241,7 @@ public class UIDesign extends JFrame {
                 pan.add(Add);
                 pan.add(Cancel);
                 mydialog.add(pan);
+                mydialog.setLocationRelativeTo(null);
                 mydialog.setVisible(true);
             }
 
@@ -291,6 +292,7 @@ public class UIDesign extends JFrame {
                 pan.add(Add);
                 pan.add(Cancel);
                 dialog.add(pan);
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });
@@ -339,6 +341,7 @@ public class UIDesign extends JFrame {
                 pan.add(Add);
                 pan.add(Cancel);
                 dialog.add(pan);
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });
@@ -383,6 +386,7 @@ public class UIDesign extends JFrame {
         pan.setLayout(null);
         pan.add(label1);
         indicate.add(pan);
+        indicate.setLocationRelativeTo(null);
         indicate.setVisible(true);
     }
 
@@ -434,8 +438,7 @@ public class UIDesign extends JFrame {
             m_enter.setEnabled(true);
             receiveThread = new ReceiveThread();
             receiveThread.start();
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             System.err.println("error! " + e);
             e.printStackTrace();
             mb_displayAppend("error!");
@@ -454,6 +457,7 @@ public class UIDesign extends JFrame {
         List<UserInfo> BList = getList(blockListInfo);
         UIDesign app = new UIDesign(FList, BList, userName);
         app.setSize(550,350);
+        app.setLocation(450, 250);
         app.setVisible(true);
         app.mb_run(ipAddress, Integer.valueOf(port), userInfo, userName);
     }
