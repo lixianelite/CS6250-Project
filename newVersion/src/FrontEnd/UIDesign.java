@@ -167,21 +167,21 @@ public class UIDesign extends JFrame {
         
         addFriend.setPreferredSize(new Dimension(20, 20));
         addBlock.setPreferredSize(new Dimension(20, 20));
-        
+
         chooseRoom.addActionListener(new ActionListener() {
-        	@Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog mydialog;
                 mydialog= new JDialog();
                 mydialog.setSize(new Dimension(400,100));
                 mydialog.setTitle("Choose chatroom");
-                
+
                 JTextField tx1 = new JTextField();
                 tx1.setBounds(10, 50, 100, 20);
 
                 //JLabel label1 = new JLabel("Chatroom number: ");
                 //label1.setBounds(20, 20, 150, 20);
-                
+
                 //JLabel indicate = new JLabel("indicate");
                 //indicate.setBounds(20, 40, 150, 20);
 
@@ -196,28 +196,12 @@ public class UIDesign extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         String name = tx1.getText();
                         System.out.println("name: " + name);
-                        os.println("operation " + name);
                         tx1.setText("");
                         tx1.requestFocus();
-                        
                         mydialog.setVisible(false);
-                        JDialog mydialog2=new JDialog();
-                        mydialog2.setSize(new Dimension(400, 400));
-                        
-                        JPanel innerpan=new JPanel();
-                        JTextArea inner1 = new JTextArea();
-                        inner1.setBounds(0, 0, 400, 200);                       
-                        JTextArea inner2 = new JTextArea();
-                        inner2.setBounds(0, 225, 400, 150);
-                        
-                        inner1.requestFocus(); //
-                        inner1.setCaretPosition(inner1.getText().length());
-                                                                  
-                        innerpan.add(inner1);
-                        innerpan.add(inner2);
-                        innerpan.setLayout(null);
-                        mydialog2.add(innerpan);
-                        mydialog2.setVisible(true);
+
+                        ChatRoom chatRoom = new ChatRoom(name, userName);
+                        chatRoom.setVisible(true);
                     }
                 });
 
@@ -232,15 +216,16 @@ public class UIDesign extends JFrame {
                 pan.setLayout(null);
                 //pan.add(label1);
                 //pan.add(indicate);
-               
+
                 pan.add(tx1);
                 pan.add(Add);
                 pan.add(Cancel);
                 mydialog.add(pan);
                 mydialog.setVisible(true);
             }
-        	
+
         });
+
 
         addFriend.addActionListener(new ActionListener() {
 

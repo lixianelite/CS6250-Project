@@ -58,13 +58,17 @@ public class RoomServer {
                     try {
                         String msg = is.readLine();
 
-                        if (msg.equals("/quit")) {
-                            break;
-                        }
+                        if (!msg.equals(null)) {
+                            System.out.println(msg);
 
-                        synchronized (this) {
-                            for (ChatThread user : users) {
-                                user.sendMsg(msg);
+                            if (msg.equals("/quit")) {
+                                break;
+                            }
+
+                            synchronized (this) {
+                                for (ChatThread user : users) {
+                                    user.sendMsg(msg);
+                                }
                             }
                         }
                     }
@@ -90,6 +94,7 @@ public class RoomServer {
             synchronized (this) {
                 users.add(newThread);
             }
+            newThread.start();
         }
     }
 
@@ -113,6 +118,8 @@ public class RoomServer {
                 PrintStream os = new PrintStream(clientSocket.getOutputStream());
                 String userName = is.readLine();
                 String roomName = is.readLine();
+
+                System.out.println(userName + " enter room: " + roomName);
 
                 boolean findRoom = false;
                 for (Room room : rooms) {
