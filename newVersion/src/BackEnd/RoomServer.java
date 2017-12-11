@@ -81,6 +81,9 @@ public class RoomServer {
                 synchronized (this) {
                     exitThread();
                     users.remove(this);
+                    for (ChatThread user : users) {
+                        user.sendMsg(userName + " exit room.");
+                    }
                 }
             }
         }
@@ -93,6 +96,9 @@ public class RoomServer {
             ChatThread newThread = new ChatThread(user, socket, is, os, this.users);
             synchronized (this) {
                 users.add(newThread);
+                for (ChatThread t : users) {
+                    t.sendMsg(user + " enter room.");
+                }
             }
             newThread.start();
         }
