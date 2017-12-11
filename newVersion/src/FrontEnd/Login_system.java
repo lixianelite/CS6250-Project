@@ -43,7 +43,7 @@ public class Login_system{
     private void initialize() {
         frame = new JFrame();
 
-        frame.setBounds(200, 200, 450, 300);
+        frame.setBounds(450, 250, 450, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 

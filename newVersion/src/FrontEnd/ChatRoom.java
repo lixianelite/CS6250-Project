@@ -15,6 +15,7 @@ import java.net.Socket;
 /**
  * Created by allam on 12/10/17.
  */
+
 public class ChatRoom extends JFrame{
     private JTextArea roomDisplay;
     private JTextField roomEnter;
