@@ -16,6 +16,7 @@ import java.net.Socket;
 /**
  * Created by bravado on 12/9/17.
  */
+
 public class Registration{
     private JFrame frame;
     private JTextField txtUsername;

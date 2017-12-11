@@ -105,8 +105,6 @@ public class Login_system{
         });
         btnRegister.setBounds(226, 224, 117, 29);
         frame.getContentPane().add(btnRegister);
-
-
         args = new String[6];
     }
 
