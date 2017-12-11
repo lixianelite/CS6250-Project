@@ -19,6 +19,12 @@ import java.util.List;
 public class UIDesign extends JFrame {
     private List<UserInfo> friendList;
     private List<UserInfo> blockList;
+    DefaultListModel<String> l1;
+    DefaultListModel<String> l2;
+    JList<String> fList;
+    JList<String> bList;
+
+    Container container;
     // Chat contents of different friends in friend list
     private List<StringBuilder> chats = new ArrayList<StringBuilder>();
     private JTextField m_enter;
@@ -42,7 +48,6 @@ public class UIDesign extends JFrame {
                 String msg;
                 while ((!isInterrupted()) && ((msg = is.readLine()) != null) && (!mb_isEndSession(msg))) {
                     parseMessage(msg);
-                    //mb_displayAppend(msg);
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -53,34 +58,52 @@ public class UIDesign extends JFrame {
 
         private void parseMessage(String msg) {
             msg = msg.replaceFirst("@" ,"");
+            System.out.println("msg: " + msg);
             String name = msg.split(":", 2)[0];
-            for (int i = 0; i < friendList.size(); ++i) {
-                if (name.equals(friendList.get(i).getUserName())) {
-                    if (i == selectedIndex) {
-                        mb_displayAppend(msg);
-                    }
-                    else {
-                        chats.get(i).append(msg+"\n");
+            String response = msg.split(":", 2)[1];
+            if (name.equals("admin")){
+                System.out.println("admin response: " + response);
+                createDialog(response);
+                if (response == "SUCCESS"){
+                    //remove people from block list
+                    //add people to friend list
+                    //vice versa
+                }
+            }else if (name.equals("extra")){
+                createDialog(response);
+            } else{
+                for (int i = 0; i < friendList.size(); ++i) {
+                    if (name.equals(friendList.get(i).getUserName())) {
+                        if (i == selectedIndex) {
+                            mb_displayAppend(msg);
+                        }
+                        else {
+                            chats.get(i).append(msg+"\n");
+                        }
                     }
                 }
             }
+
         }
     }
 
     // Friend selection list listener, to change current window and target receiver.
     private class FriendListSelectionListener implements ListSelectionListener {
-
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            //System.out.println(e.getClass());
             JList<String> fList = (JList<String>)e.getSource();
             selectedIndex = fList.getSelectedIndex();
             String st = chats.get(selectedIndex).toString();
             m_display.setText(st);
             m_display.setCaretPosition(m_display.getText().length());
-            //System.out.println(selectedIndex + " " + friendList.get(selectedIndex).getUserName());
         }
+    }
 
+    private class BlockListSelectionListener implements ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            //remove people from this list;
+        }
     }
 
     public void exitServer() {
@@ -104,28 +127,27 @@ public class UIDesign extends JFrame {
         }
     }
 
-    public UIDesign(List<UserInfo> friendList, List<UserInfo> blockList) {
-        super("Chat Program");
+    public UIDesign(List<UserInfo> friendList, List<UserInfo> blockList, String UserName) {
+        super(UserName);
         this.friendList = friendList;
         this.blockList = blockList;
 
-        Container c = getContentPane();
+        container = getContentPane();
 
         m_display = new JTextArea();
-        c.add(new JScrollPane(m_display));
+        container.add(new JScrollPane(m_display));
 
-        DefaultListModel<String> l1 = new DefaultListModel<>();
+        l1 = new DefaultListModel<>();
         for (UserInfo object : this.friendList){
             l1.addElement(object.getUserName());
-            // Initialize chat contents in each chats
             StringBuilder sb = new StringBuilder();
             sb.append("chat with " + object.getUserName() + ":\n");
             chats.add(sb);
         }
 
-        JList<String> fList = new JList<>(l1);
+        fList = new JList<>(l1);
         fList.setBounds(100,100, 75,75);
-        c.add(fList);
+        container.add(fList);
 
         fList.addListSelectionListener(new FriendListSelectionListener());
 
@@ -135,8 +157,6 @@ public class UIDesign extends JFrame {
         m_enter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 try {
-                    // changed here
-                    // send message to target user.
                     String s = event.getActionCommand();
                     if (selectedIndex != -1) {
                         os.println("message @" + friendList.get(selectedIndex).getUserName() + ":" + s);
@@ -164,7 +184,6 @@ public class UIDesign extends JFrame {
         JButton addBlock = new JButton("Add Block List");
 
         addFriend.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog dialog;
@@ -176,9 +195,6 @@ public class UIDesign extends JFrame {
 
                 JLabel label1 = new JLabel("Input Username: ");
                 label1.setBounds(20, 20, 150, 20);
-
-                JLabel indicate = new JLabel("indicate");
-                indicate.setBounds(20, 40, 150, 20);
 
                 JButton Add = new JButton("Add");
                 Add.setBounds(150, 50, 100, 20);
@@ -192,8 +208,8 @@ public class UIDesign extends JFrame {
                         String name = tx1.getText();
                         System.out.println("name: " + name);
                         os.println("operation FRIEND " + name);
-                        tx1.setText("");
-                        tx1.requestFocus();
+                        dialog.setVisible(false);
+
                     }
                 });
 
@@ -207,7 +223,6 @@ public class UIDesign extends JFrame {
                 JPanel pan = new JPanel();
                 pan.setLayout(null);
                 pan.add(label1);
-                pan.add(indicate);
                 pan.add(tx1);
                 pan.add(Add);
                 pan.add(Cancel);
@@ -235,9 +250,6 @@ public class UIDesign extends JFrame {
                 JButton Cancel = new JButton("Cancel");
                 Cancel.setBounds(275, 50, 100, 20);
 
-                JLabel indicate = new JLabel("indicate");
-                indicate.setBounds(20, 40, 150, 20);
-
                 Add.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -259,7 +271,6 @@ public class UIDesign extends JFrame {
                 JPanel pan = new JPanel();
                 pan.setLayout(null);
                 pan.add(label1);
-                pan.add(indicate);
                 pan.add(tx1);
                 pan.add(Add);
                 pan.add(Cancel);
@@ -273,17 +284,20 @@ public class UIDesign extends JFrame {
 
         panel.add(spanel);
 
-        c.add(panel);
+        container.add(panel);
 
         DefaultListModel<String> l2 = new DefaultListModel<>();
         for (UserInfo object : this.blockList){
             l2.addElement(object.getUserName());
         }
 
-        JList<String> bList = new JList<>(l2);
+        bList = new JList<>(l2);
         bList.setBounds(100,100, 75,75);
-        c.add(bList);
-        c.setLayout(new GridLayout(2,2));
+        container.add(bList);
+
+        bList.addListSelectionListener(new BlockListSelectionListener());
+
+        container.setLayout(new GridLayout(2,2));
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -293,6 +307,19 @@ public class UIDesign extends JFrame {
                 System.exit(0);
             }
         });
+    }
+
+    private void createDialog(String response){
+        JDialog indicate = new JDialog();
+        indicate.setSize(new Dimension(600,100));
+        indicate.setTitle("Message");
+        JLabel label1 = new JLabel(response);
+        label1.setBounds(20, 20, 500, 20);
+        JPanel pan = new JPanel();
+        pan.setLayout(null);
+        pan.add(label1);
+        indicate.add(pan);
+        indicate.setVisible(true);
     }
 
     public void mb_displayAppend(String s) {
@@ -355,13 +382,13 @@ public class UIDesign extends JFrame {
         String ipAddress = args[0];
         String port = args[1];
         String userName = args[2];
-        String friendList = args[3];
-        String blockList = args[4];
+        String friendListInfo = args[3];
+        String blockListInfo = args[4];
         String userInfo = args[5];
 
-        List<UserInfo> fList = getList(friendList);
-        List<UserInfo> bList = getList(blockList);
-        UIDesign app = new UIDesign(fList, bList);
+        List<UserInfo> FList = getList(friendListInfo);
+        List<UserInfo> BList = getList(blockListInfo);
+        UIDesign app = new UIDesign(FList, BList, userName);
         app.setSize(550,350);
         app.setVisible(true);
         app.mb_run(ipAddress, Integer.valueOf(port), userInfo, userName);

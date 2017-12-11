@@ -44,7 +44,6 @@ public class ServerEnd {
         while (true) {
             try {
                 clientSocket = serverSocket.accept();
-
                 for (int i = 0; i < c_maxClientNum; ++i) {
                     if (threads[i] == null) {
                         ClientThread tmpThread = new ClientThread(clientSocket, threads);

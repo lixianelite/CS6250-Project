@@ -3,8 +3,6 @@ package BackEnd;
 import Model.DataManagement;
 import Model.UserInfo;
 import Model.UserObject;
-
-import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,7 +44,6 @@ public class ClientThread extends Thread {
 
     public void run() {
         ClientThread[] threads = this.threads;
-
         try {
             while (!isInterrupted()) {
                 String line = is.readLine();
@@ -57,7 +54,6 @@ public class ClientThread extends Thread {
                 }
                 parsePacket(line);
             }
-            //System.out.println("*** Bye " + clientName + " ***");
 
             synchronized (this) {
                 for (int i = 0; i < threads.length; i++) {
@@ -66,7 +62,6 @@ public class ClientThread extends Thread {
                     }
                 }
             }
-
             exitThread();
         } catch (IOException e) {
             System.out.println("multiThreading error: " + e);
@@ -91,34 +86,43 @@ public class ClientThread extends Thread {
             sendMessage(words[1]);
         }
         else if (words[0].equals("operation")) {
-            processAdd(words[1]);
-
+            String result = processAdd(words[1]);
+            System.out.println("result: " + result);
+            this.os.println("@admin:" + result);
         }
     }
 
     private String processAdd(String operation){
         String[] contents = operation.split("\\s", 2);
         String name = contents[1];
-        if (contents[0].equals("FRIEND")){
-            System.out.println("NAME: Friend " + name);
-            String cName = clientName.substring(1);
-            UserObject userObject = DataManagement.INSTANCE.findUserByUserName(cName);
-            List<UserInfo> blockList = userObject.getBlockList();
-            for (int i = 0; i < blockList.size(); i++){
-                if (name.equals(blockList.get(i).getUserName())){
-                    blockList.remove(i);
-                }
-            }
-            userObject = DataManagement.INSTANCE.findUserByUserName(name);
-            List<UserInfo> friendList = userObject.getFriendList();
-            if (userObject != null){
+        UserObject searchObject = DataManagement.INSTANCE.findUserByUserName(name);
+        String cName = clientName.substring(1);
+        UserObject currentUserObject = DataManagement.INSTANCE.findUserByUserName(cName);
+        List<UserInfo> blockList = currentUserObject.getBlockList();
+        List<UserInfo> friendList = currentUserObject.getFriendList();
 
+        System.out.println("contents[1] " + contents[1]);
+
+        if (searchObject != null){
+            if (contents[0].equals("FRIEND")){
+                System.out.println("NAME: " + name);
+                removeUserFromList(blockList, name);
+                friendList.add(new UserInfo(searchObject.getUserName()));
+                System.out.println("cName: " + cName);
+            }else if (contents[0].equals("BLOCK")){
+                removeUserFromList(friendList, name);
+                blockList.add(new UserInfo(searchObject.getUserName()));
             }
-            System.out.println("cName: " + cName);
-        }else if (contents[0].equals("BLOCK")){
-            System.out.println("NAME: Block " + name);
+        }else {
+            return "USER_NOT_EXIST";
         }
-        return "";
+        return "SUCCESS";
+    }
+
+    private void removeUserFromList(List<UserInfo> list, String name){
+        for (int i = 0; i < list.size(); i++){
+            if (name.equals(list.get(i).getUserName())) list.remove(i);
+        }
     }
 
     private void sendMessage(String msg) {
@@ -128,16 +132,38 @@ public class ClientThread extends Thread {
             if (!words[1].isEmpty()) {
                 synchronized (this) {
                     for (int i = 0; i < threads.length; i++) {
-                        if (threads[i] != null) System.out.println(threads[i].getUserName());
                         if (threads[i] != null && threads[i] != this
                                 && threads[i].clientName != null
                                 && threads[i].clientName.equals(words[0])) {
-                            threads[i].os.println(clientName + ": " + words[1]);
+                            String receiver = words[0].replaceFirst("@", "");
+                            String sender = this.clientName.replace("@", "");
+                            System.out.println("receiver: " + receiver);
+                            System.out.println("sender: " + sender);
+
+                            UserObject receiverObject = DataManagement.INSTANCE.findUserByUserName(receiver);
+                            List<UserInfo> friendList = receiverObject.getFriendList();
+                            List<UserInfo> blockList = receiverObject.getBlockList();
+                            UserInfo senderFriend = searchPeople(friendList, sender);
+                            UserInfo senderBlock = searchPeople(blockList, sender);
+                            if (senderBlock != null){
+                                this.os.println("extra:Send failed!!! The receiver you choose list you in the block list");
+                            }else if(senderFriend != null){
+                                threads[i].os.println(clientName + ": " + words[1]);
+                            }else{
+                                this.os.println("extra:Send failed!!! The receiver you choose doesn't know you!");
+                            }
                             break;
                         }
                     }
                 }
             }
         }
+    }
+
+    private UserInfo searchPeople(List<UserInfo> list, String name){
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).getUserName().equals(name)) return list.get(i);
+        }
+        return null;
     }
 }

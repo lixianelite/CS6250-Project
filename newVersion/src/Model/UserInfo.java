@@ -13,7 +13,4 @@ public class UserInfo {
     public String getUserName(){
         return userName;
     }
-
-
-
 }
